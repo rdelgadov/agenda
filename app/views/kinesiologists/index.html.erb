@@ -1,0 +1,23 @@
+<h1>Listado de Kinesiologos</h1>
+
+<table class="table">
+  <tr>
+    <th>Nombre</th>
+    <th>Rut</th>
+    <th>Telefono</th>
+    <th>Agenda</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @kinesiologists.each do |kine| %>
+    <tr>
+      <td><%= kine.name %></td>
+      <td><%= kine.rut %></td>
+      <td><%= kine.phone %></td>
+      <td><%= link_to 'Ver Agenda', kinesiologist_calendar_path(kine) %></td>
+      <td><%= link_to 'Ver', kinesiologist_path(kine) %></td>
+      <td><%= link_to 'Editar', edit_kinesiologist_path(kine) %></td>
+    </tr>
+  <% end %>
+</table>

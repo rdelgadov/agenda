@@ -1,0 +1,40 @@
+<div class='mini_calendar' id='mini_calendar'></div>
+<script>
+  var events = [];
+  // TODO: Take events and know if it is already or not.
+  // Do not duplicate the events.
+  // IMPORTANT! How can render events if change the month view.
+  $('#mini_calendar').fullCalendar(
+    {
+      events: events,
+      header: {
+        right: 'today prev,next'
+      },
+      dayClick: function(date, jsEvent, view){
+        d_event = {title:'', start: date, allDay: true, color: '#bce8f1'};
+        filtered_events = events.filter(function(el) {
+            return el.start._d.getTime() !== d_event.start._d.getTime(); });
+        if (filtered_events.length  !== events.length) {
+          events = filtered_events;
+          $(this).removeClass('fc-highlight')
+        }
+        else {
+          events.push(d_event);
+          $(this).addClass('fc-highlight');
+          $('#calendar').fullCalendar('renderEvent', d_event,true );
+        }
+      },
+      dayRender: function(date,cell) {
+        filtered_events = events.filter(function (el) {
+          return el.start._d.getTime() !== date._d.getTime();
+        });
+        if (filtered_events.length  !== events.length) {
+          cell.addClass('fc-highlight');
+        }
+      },
+      locale: 'es',
+      height: 'auto',
+      defaultView: 'month',
+      themeSystem:'bootstrap4',
+      firstDay: 1
+    });</script>

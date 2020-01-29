@@ -1,0 +1,88 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require style
+ *= require fullcalendar
+ *= require_self
+ */
+
+.flash
+{
+ position: absolute;
+}
+
+#calendar
+{
+    padding: 1%;
+}
+
+#mini_calendar
+{
+    width: 150px;
+    margin: 0 20px;
+    font-size: 10px;
+    position: relative;
+}
+
+#mini_calendar > .fc-toolbar {
+    font-size: .9em;
+}
+#mini_calendar > .fc-toolbar h2 {
+    font-size: 12px;
+    white-space: normal !important;
+}
+/* click +2 more for popup */
+#mini_calendar > .fc-more-cell a {
+    display: block;
+    width: 85%;
+    margin: 1px auto 0 auto;
+    border-radius: 3px;
+    background: grey;
+    color: transparent;
+    overflow: hidden;
+    height: 4px;
+}
+#mini_calendar > .fc-more-popover {
+    width: 100px;
+}
+#mini_calendar > .fc-view-month .fc-event .fc-view-agendaWeek .fc-event .fc-content {
+    font-size: 0;
+    overflow: hidden;
+    height: 2px;
+}
+#mini_calendar > .fc-view-agendaWeek .fc-event-vert {
+    font-size: 0;
+    overflow: hidden;
+    width: 2px !important;
+}
+#mini_calendar > .fc-agenda-axis {
+    width: 20px !important;
+    font-size: .7em;
+}
+
+#mini_calendar > .fc-button-content {
+    padding: 0;
+}
+#mini_calendar > .fc-basic-view .fc-body .fc-row{
+    min-height: 1em;
+}
+#mini_calendar > .fc-day{
+    height: 10px;
+}
+
+#table_new_person{
+    text-align: center;
+}
+
+.hidden {
+  display: none
+}

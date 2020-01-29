@@ -1,0 +1,11 @@
+<%= form_with scope: :person, url: persons_search_path, method: 'get', local: true do |form| %>
+  <p>
+    <%= form.label :rut %><br>
+    <%= form.text_field :rut %>
+  </p>
+
+  <p>
+    <%= form.submit :Buscar %>
+  </p>
+<% end %>
+<%= link_to 'Nuevo ingreso', new_person_path %>

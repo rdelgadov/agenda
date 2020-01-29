@@ -1,0 +1,23 @@
+<h1>Listado de Medicos Atencion Primaria</h1>
+
+<table class="table">
+  <tr>
+    <th>Nombre</th>
+    <th>Rut</th>
+    <th>Telefono</th>
+    <th>Agenda</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @medics.each do |medic| %>
+    <tr>
+      <td><%= medic.name %></td>
+      <td><%= medic.rut %></td>
+      <td><%= medic.phone %></td>
+      <td><%= link_to 'Ver agenda', medic_calendar_path(medic) %></td>
+      <td><%= link_to 'Ver', medic_path(medic) %></td>
+      <td><%= link_to 'Editar', edit_medic_path(medic) %></td>
+    </tr>
+  <% end %>
+</table>

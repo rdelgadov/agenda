@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2019-12-28
+  time: 2019-12-28 17:36:56
+  person: one
+  medic: 
+
+two:
+  date: 2019-12-28
+  time: 2019-12-28 17:36:56
+  person: two
+  medic: 

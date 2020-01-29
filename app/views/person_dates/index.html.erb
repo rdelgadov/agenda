@@ -1,0 +1,21 @@
+<h1>Listing Persons Dates</h1>
+
+<table>
+  <tr>
+    <th>Dia</th>
+    <th>Hora</th>
+    <th>Persona</th>
+    <th>Medico</th>
+    <th></th>
+  </tr>
+
+  <% @dates.each do |date| %>
+    <tr>
+      <td><%= date.date %></td>
+      <td><%= date.time %></td>
+      <td><%= link_to date.person.name , person_path(date.person)  %></td>
+      <td><%= link_to date.medic.name , medic_path(date.medic)  %></td>
+      <td><%= link_to 'Ver', person_date_path(date) %></td>
+    </tr>
+  <% end %>
+</table>

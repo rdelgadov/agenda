@@ -1,0 +1,40 @@
+<div class="row">
+<div class="col">
+<%= form_with scope: :person_date, url: person_dates_path, local: true do |form| %>
+  <p>
+    <%= form.label :fecha %><br>
+    <%= form.date_field :date, value: Date.tomorrow%>
+  </p>
+
+  <p>
+    <%= form.label :hora %><br>
+    <%= form.time_field :time %>
+  </p>
+
+  <p>
+    <%= form.label :medico %><br>
+    <%= form.collection_select :medic_id, Medic.all, :id , :name %>
+  </p>
+
+  <% if params[:id] %>
+    <%= form.text_field :person_id, value: params[:id], class: 'hidden' %>
+  <% else %>
+
+  <p>
+    <%= form.label :persona %><br>
+    <%= form.collection_select :person_id, Person.all, :id, :name %>
+
+  </p>
+    <% end %>
+
+  <p>
+    <%= form.submit %>
+  </p>
+
+<% end %>
+  </div>
+  <div class="col-6">
+      <%= render template:'layouts/template_calendar', locals: {medics: Medic.all, person_dates: PersonDate.all, type: "agendaDay" }%>
+
+  </div>
+</div>

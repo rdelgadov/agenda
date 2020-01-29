@@ -1,0 +1,36 @@
+<%= form_with model: @medic, local: true do |form| %>
+
+  <% if @medic.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%= pluralize(@medic.errors.count, "error") %> Prohibido
+        Guardar este medico
+      </h2>
+      <ul>
+        <% @medic.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= form.label :nombre %><br>
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <%= form.label :rut %><br>
+    <%= form.text_field :rut %>
+  </p>
+
+  <p>
+    <%= form.label :telefono %><br>
+    <%= form.text_field :phone %>
+  </p>
+
+  <p>
+    <%= form.submit :enviar%>
+  </p>
+
+<% end %>

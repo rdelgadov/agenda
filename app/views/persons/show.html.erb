@@ -1,0 +1,73 @@
+<p>
+  <strong>Nombre:</strong>
+  <text><%= @person.name %> <%= @person.first_name %> <%= @person.second_name %></text>
+</p>
+
+<p>
+  <strong>BP: </strong>
+  <%= @person.bp %>
+</p>
+
+<p>
+  <strong>Telefono: </strong>
+  <%= @person.phone %>
+</p>
+
+<p>
+  <strong>Dias de tratamiento: </strong>
+  <%= @person.number_of_days %>
+</p>
+
+<p>
+  <strong> Fecha proximo control: </strong>
+  <%= @last_date.date %>
+</p>
+
+<p>
+  <strong> Descanso: </strong>
+  <strong>
+    <% if @person.rest %>
+      Si
+    <% else %>
+      No
+    <% end %>
+  </strong>
+</p>
+
+<p>
+  <strong>Comuna: </strong>
+  <%= @person.town %>
+</p>
+
+<p>
+  <strong>Calle: </strong>
+  <%= @person.address %>
+  <strong> numero </strong>
+  <%= @person.address_number %>
+</p>
+
+<% if @person.transportation %>
+  <p>
+    <strong> Transporte: </strong>
+    <strong>Si</strong>
+  </p>
+  <p>
+    <strong> Latitud: </strong>
+    <%= @person.latitude %>
+  </p>
+  <p>
+    <strong> Longitud: </strong>
+    <%= @person.longitude %>
+  </p>
+  <p>
+    <strong> Tipo de vehiculo: </strong>
+    <% if @person.vehicle_type %>
+      <strong> Ambulancia</strong>
+    <% else %>
+      <strong> Auto </strong>
+    <% end %>
+  </p>
+<% else %>
+  <strong> Transporte: </strong>
+  <strong>No</strong>
+<% end %>

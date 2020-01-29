@@ -1,0 +1,36 @@
+<%= form_with model: @kine, local: true do |form| %>
+
+  <% if @kine.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%= pluralize(@kine.errors.count, "error") %> Prohibido
+        Guardar este kinesiologo
+      </h2>
+      <ul>
+        <% @kine.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= form.label :nombre %><br>
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <%= form.label :rut %><br>
+    <%= form.text_field :rut %>
+  </p>
+
+  <p>
+    <%= form.label :telefono %><br>
+    <%= form.text_field :phone %>
+  </p>
+
+  <p>
+    <%= form.submit :enviar%>
+  </p>
+
+<% end %>

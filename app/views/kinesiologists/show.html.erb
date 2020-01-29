@@ -1,0 +1,16 @@
+<p>
+  <strong>Nombre:</strong>
+  <%= @kine.name %>
+</p>
+
+<p>
+  <strong>Rut:</strong>
+  <%= @kine.rut %>
+</p>
+<p>
+  <strong>Telefono:</strong>
+  <%= @kine.phone %>
+</p>
+
+<%= link_to 'Editar', edit_kinesiologist_path(@kine) %>
+<%= link_to 'Volver', kinesiologists_path %>
