@@ -42,6 +42,6 @@ class KinesiologistsController < ApplicationController
 
   private
   def permit_params
-    params.require(:kinesiologist).permit(:name, :rut, :phone)
+    params.require(:kinesiologist).permit(:name, :rut, :phone, :color)
   end
 end
