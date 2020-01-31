@@ -18,7 +18,7 @@ class CreatePeople < ActiveRecord::Migration[5.2]
       t.string :address_number
       t.integer :number_of_days
       t.integer :travels_type
-      t.date :dates, array: true, default: []
+      t.date :dates, array: true, default: [].to_yaml
 
       t.timestamps
     end

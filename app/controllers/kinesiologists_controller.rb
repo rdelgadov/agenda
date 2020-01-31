@@ -1,6 +1,4 @@
 class KinesiologistsController < ApplicationController
-
-
   def calendar
     @person_dates = PersonDate.where(medic_id: params[:id])
     @medics = [Kinesiologist.find(params[:id])]
@@ -42,6 +40,6 @@ class KinesiologistsController < ApplicationController
 
   private
   def permit_params
-    params.require(:kinesiologist).permit(:name, :rut, :phone, :color)
+    params.require(:kinesiologist).permit(:name, :rut, :phone, :color, attention: {})
   end
 end

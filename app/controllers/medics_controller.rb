@@ -39,6 +39,6 @@ class MedicsController < ApplicationController
 
   private
   def permit_params
-    params.require(:medic).permit(:name, :rut, :phone, :color)
+    params.require(:medic).permit(:name, :rut, :phone, :color, attention: {})
   end
 end

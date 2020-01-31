@@ -5,6 +5,9 @@ class CreateMedics < ActiveRecord::Migration[5.2]
       t.string :rut
       t.string :phone
       t.string :type
+      t.string :color
+      t.string :attention
+
 
       t.timestamps
     end

@@ -6,7 +6,7 @@ class PersonsController < ApplicationController
   end
 
   def index
-    @persons = Person.all
+    @persons = Person.all[1..-1]
   end
 
   def new

@@ -7,7 +7,7 @@
         right: 'agendaDay,agendaWeek'
       },
       locale: 'es',
-      defaultDate: '2019-06-03',
+      defaultDate: '2020-01-27',
       defaultView: '<%= type %>',
       height: 'auto',
       themeSystem:'bootstrap4',
@@ -29,12 +29,12 @@
       events:[
         <% person_dates.each do |person_date| %>
            {
-             title: '<%= person_date.person.name %> con <%= person_date.medic.name %>',
+             title: '<%= person_date.person.bp %> con <%= person_date.medic.name %>',
              start: '<%= person_date.start_time %>',
              description: '<%= person_date.medic.name  %>',
              color: '<%= person_date.color %>',
-             resourceId: '<%= person_date.medic.id %>'
-           },
+             resourceId: '<%= person_date.medic.id %>'           },
+
         <% end %>
       ]
     });</script>

@@ -11,8 +11,6 @@ namespace :read_csv do
         person = Person.new(bp: row["ident"], rut: row["ident"], transportation: transportation, latitude: row["lat"], longitude: row["lon"], vehicle_type: 1, rest: row["medical_rest"])
         person.save!
       end
-      pd = PersonDate.new(date: row["date"].to_date, time: "00:00:00".to_time, medic_id: row["doctor_id"], person_id: person.id)
-      pd.save!
     end
   end
   desc "Load data from output"
@@ -20,15 +18,18 @@ namespace :read_csv do
     table = CSV.parse(File.read(Rails.root.join("lib/tasks/output.csv")), headers: true)
     table.by_row!.each do |row|
       person = Person.find_by_bp(row["patient_id"])
-      if person
-        pd = PersonDate.where(person_id: person.id, date: row["date"].to_date).first
+      unless person
+        person = Person.new(bp: row["patient_id"], rut: row["patient_id"])
+        person.save!
+      end
+        pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: row["t_start"]).first
         if !pd
           print("fecha desconocida")
         else
-          pd.update_attribute(:time, row["t_start"].to_time)
+          pd.update_attribute(:person_id, person.id)
         end
-        end
+
     end
   end
-  end
+end
 

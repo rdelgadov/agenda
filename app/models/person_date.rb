@@ -3,10 +3,22 @@ class PersonDate < ApplicationRecord
   belongs_to :medic
 
   def start_time
-    DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.zone)
+    print(self.time)
+    ntime = time.split(':')
+    DateTime.now.change(year: date.year,
+                        month: date.month,
+                        day: date.day,
+                        hour: ntime[0].to_i,
+                        min: ntime[1].to_i)
+  end
+
+  def taked
+    return true if person.id == 1
+    false
   end
 
   def color
-    medic.color
+    return medic.color unless taked
+    'gray'
   end
 end

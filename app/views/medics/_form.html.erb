@@ -33,8 +33,33 @@
     <%= form.label :color %>
     <%= form.text_field :color %>
   </p>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <tr>
+        <th>Hora</th>
+        <th>Lunes</th>
+        <th>Martes</th>
+        <th>Miercoles</th>
+        <th>Jueves</th>
+        <th>Viernes</th>
+      </tr>
+      <% ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17'].each do |h| %>
+        <% ['00', '15', '30', '45'].each do |m| %>
+          <tr>
+            <td><%= h + ':' + m %></td>
+            <% 5.times do |i| %>
+              <td><%= form.check_box "attention[" + h + ':' + m + "]", {multiple: true, checked: (@medic.attention[h + ':' + m].include? i.to_s unless @medic.attention.blank? or @medic.attention[h + ':' + m].blank?)}, i, false %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+
+    </table>
+
+  </div>
   <p>
-    <%= form.submit :enviar%>
+    <%= form.submit :enviar %>
   </p>
 
 <% end %>
