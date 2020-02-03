@@ -24,6 +24,8 @@ class PersonDatesController < ApplicationController
     Medic.where(type: nil).all.each do |medic|
       medic.create_dates params[:date].to_date
     end
+    redirect_to action: :index
+
   end
 
   def create_kinesiologist_dates
@@ -31,6 +33,7 @@ class PersonDatesController < ApplicationController
     Kinesiologist.all.each do |kine|
       kine.create_dates params[:date].to_date
     end
+    redirect_to action: :index
   end
 
   def available_dates

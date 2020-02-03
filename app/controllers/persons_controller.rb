@@ -28,8 +28,7 @@ class PersonsController < ApplicationController
   end
 
   def search
-    print search_params
-    if Person.exists? rut: search_params[:rut]
+    if Person.exists? bp: search_params[:bp]
       @person = Person.where(search_params).first
       redirect_to @person
     else
