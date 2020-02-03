@@ -8,7 +8,7 @@
 
   <p>
     <%= form.label :hora %><br>
-    <%= form.select :time, %w[8:00 8:15 8:30 8:45 9:00 9:15 9:30 9:45 10:00 10:15 10:30 10:45 11:00 11:15 11:30 11:45 12:00 12:15 12:30 12:45 13:00 13:15 13:30 13:45 14:00 14:15 14:30 14:45 15:00 15:15 15:30 15:45 16:00].map{|value| [value,value]}  %>
+    <%= form.select :time, Medic.first.available_dates(Date.tomorrow).map{|date| [date.time,date.time]}  %>
   </p>
 
   <p>
@@ -38,3 +38,37 @@
 
   </div>
 </div>
+
+<script>
+  var date = $('#person_date_date');
+  var medic = $('#person_date_medic_id');
+  function poblate_date(){
+    $.ajax({
+      url:'available_dates',
+      type: 'GET',
+      data:{
+        medic_id: medic.val(),
+        date: date.val()
+      },
+      success: function(data){
+        options = $('#person_date_time')[0].options;
+        options.length = 0;
+        data.forEach(function (option) {
+          options[options.length] = new Option(option.time, option.time);
+        });
+
+
+      }
+    });
+  }
+  date.change(function(){
+    var date = moment($(this).val(), "YYYY-MM-DD");
+    $('#calendar').fullCalendar('gotoDate', date);
+    poblate_date();
+  });
+
+  medic.change(function(){
+    poblate_date();
+  })
+
+</script>

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get 'kinesiologists/:id/calendar', to: 'kinesiologists#calendar', as: 'kinesiologist_calendar'
   get 'person_dates/create_medics_dates', to: 'person_dates#create_medics_dates'
   get 'person_dates/create_kine_dates', to: 'person_dates#create_kinesiologist_dates'
+  get 'persons/:id/calendar/available_dates', to: 'person_dates#available_dates', as: 'available_dates'
+  get 'create_attention_capacity', to: 'application#create_attention_capacity'
 
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'

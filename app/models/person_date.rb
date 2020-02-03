@@ -3,7 +3,6 @@ class PersonDate < ApplicationRecord
   belongs_to :medic
 
   def start_time
-    print(self.time)
     ntime = time.split(':')
     DateTime.now.change(year: date.year,
                         month: date.month,
@@ -12,13 +11,17 @@ class PersonDate < ApplicationRecord
                         min: ntime[1].to_i)
   end
 
-  def taked
-    return true if person.id == 1
+  def self.take params
+    pd = self.where(medic_id: params[:medic_id], date: params[:date], time: params[:time], person_id: 1).first
+    pd.update_attribute(:person_id, params[:person_id])
+  end
+
+  def taked?
+    return true unless person.id == 1
     false
   end
 
   def color
-    return medic.color unless taked
-    'gray'
+    medic.color
   end
 end
