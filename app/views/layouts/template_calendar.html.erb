@@ -4,10 +4,10 @@
       header: {
         left: 'prev,next',
         center: 'title',
-        right: 'agendaDay,agendaWeek'
+        right: 'agendaDay,settimana'
       },
       locale: 'es',
-      defaultDate: '<%= Date.tomorrow %>',
+      defaultDate: '<%= Date.tomorrow.at_beginning_of_week %>',
       defaultView: '<%= type %>',
       height: 'auto',
       themeSystem:'bootstrap4',
@@ -45,6 +45,17 @@
           $el.css('color', 'black')
         }
       },
+      views: {
+        settimana: {
+            type: 'agendaWeek',
+            duration: {
+                days: 7
+            },
+            title: 'Apertura',
+            columnFormat: 'dddd', // Format the day to only show like 'Monday'
+            hiddenDays: [0, 6] // Hide Sunday and Saturday?
+        }
+    },
       slotEventOverlap:false,
       eventOrder: "resourceId"
     });</script>

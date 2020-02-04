@@ -7,7 +7,7 @@
 
   <tr>
     <th>Nombre</th>
-    <th>Rut</th>
+    <th>bp</th>
     <th>Telefono</th>
     <th>Agenda</th>
     <th></th>
@@ -19,7 +19,7 @@
   <% @persons.each do |person| %>
     <tr>
       <td><%= person.name %> <%= person.first_name %></td>
-      <td><%= person.rut %></td>
+      <td><%= person.bp %></td>
       <td><%= person.phone %></td>
       <td><%= link_to 'Agenda', person_calendar_path(person) %></td>
       <td><%= link_to 'Agregar hora', person_new_date_path(person) %></td>

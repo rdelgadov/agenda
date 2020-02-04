@@ -7,7 +7,7 @@ class PersonDatesController < ApplicationController
   def index
     @person_dates = PersonDate.all
     @medics = Medic.all
-    @type = 'agendaWeek'
+    @type = 'settimana'
     render 'layouts/calendar'
   end
 
