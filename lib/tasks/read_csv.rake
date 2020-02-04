@@ -15,14 +15,16 @@ namespace :read_csv do
   end
   desc "Load data from output"
   task load_data: :environment do
-    table = CSV.parse(File.read(Rails.root.join("lib/tasks/output.csv")), headers: true)
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/output.csv")), {headers: true, col_sep: ';'})
     table.by_row!.each do |row|
+      time = row["t_start"]
+      time = row["t_start"][1..-1] if row['t_start'][0]=='0'
       person = Person.find_by_bp(row["patient_id"])
       unless person
         person = Person.new(bp: row["patient_id"], rut: row["patient_id"])
         person.save!
       end
-        pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: row["t_start"]).first
+        pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: time).first
         if !pd
           print("fecha desconocida")
         else
