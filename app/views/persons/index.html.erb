@@ -12,6 +12,7 @@
     <th>Agenda</th>
     <th></th>
     <th></th>
+    <th></th>
   </tr>
 
 
@@ -24,6 +25,7 @@
       <td><%= link_to 'Agenda', person_calendar_path(person) %></td>
       <td><%= link_to 'Agregar hora', person_new_date_path(person) %></td>
       <td><%= link_to 'Ver', person_path(person) %></td>
+      <td><%= link_to 'Editar', edit_person_path(person) %></td>
     </tr>
   <% end %>
 

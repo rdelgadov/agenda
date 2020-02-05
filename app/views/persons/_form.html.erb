@@ -1,4 +1,19 @@
-<%= form_with id: :person_form, scope: :person, url: persons_path, local: true do |form| %>
+<%= form_with id: :person_form, model: @person, url: person_path, method: 'PATCH', local: true do |form| %>
+
+  <% if @person.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%= pluralize(@person.errors.count, "error") %> Prohibido
+        Guardar este paciente
+      </h2>
+      <ul>
+        <% @person.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <p>
     <%= form.label :bp %><br>
     <%= form.text_field :bp %>
@@ -87,7 +102,7 @@
     </p>
   </div>
   <p>
-    <%= form.submit :Agregar %>
+    <%= form.submit :Enviar %>
   </p>
 <% end %>
 <script type="text/javascript">
@@ -119,7 +134,8 @@
       details_div.style['display'] = 'none';
     }
   };
-  $('#form').submit(function (event) {
+  $('#person_form').submit(function (event) {
+    console.log(1);
     events.forEach(function(date,i){
       var input = '<input type="hidden" name="person[dates][]" value="'+date.start._d+'"/>';
       $('#person_form').append(input);

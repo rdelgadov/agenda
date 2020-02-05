@@ -9,11 +9,15 @@ class PersonsController < ApplicationController
     @persons = Person.all[1..-1]
   end
 
+  def edit
+    @person = Person.find(params[:id])
+  end
+
   def new
+    @person = Person.new
   end
 
   def new_date
-    print params
     render 'person_dates/new'
   end
 
@@ -37,18 +41,30 @@ class PersonsController < ApplicationController
     end
   end
 
+  def update
+    @person = Person.find(params[:id])
+    if @person.update_attributes(person_params)
+      @person.dates = person_params[:dates]
+      @person.save!
+      redirect_to @person
+    else
+      render 'edit'
+    end
+  end
+
   def show
     @person = Person.find(params[:id])
+    #TODO: replace the last date for next date.
     @last_date = PersonDate.where(person_id: params[:id]).last
   end
 
   private
   def person_params
     print(params)
-    params.require(:person).permit(:name, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, :dates)
+    params.require(:person).permit(:name, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, dates: [].to_yaml )
   end
   private
   def search_params
-    params.require(:person).permit(:rut)
+    params.require(:person).permit(:bp)
   end
 end

@@ -7,7 +7,12 @@
         right: 'agendaDay,settimana'
       },
       locale: 'es',
-      defaultDate: '<%= Date.tomorrow.at_beginning_of_week %>',
+      defaultDate:
+          <% if type=='settimana' %>
+            '<%= Date.tomorrow.at_beginning_of_week %>'
+          <% else %>
+            '<%= Date.tomorrow %>'
+        <% end %>,
       defaultView: '<%= type %>',
       height: 'auto',
       themeSystem:'bootstrap4',

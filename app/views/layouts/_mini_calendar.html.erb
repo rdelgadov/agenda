@@ -1,6 +1,11 @@
 <div class='mini_calendar' id='mini_calendar'></div>
 <script>
-  var events = [];
+
+  var events = <% if @person.dates.blank? %>
+      [];
+  <% else %>
+        <%= @person.dates %>
+<% end %>
   // TODO: Take events and know if it is already or not.
   // Do not duplicate the events.
   // IMPORTANT! How can render events if change the month view.

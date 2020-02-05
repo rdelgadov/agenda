@@ -1,7 +1,7 @@
 class PersonDatesController < ApplicationController
   def create
     @date = PersonDate.take(permit_params)
-    redirect_to action: :index
+    redirect_to action: person_new_date_path(permit_params[:person_id])
   end
 
   def index
