@@ -20,8 +20,9 @@
 //= require fullcalendar
 //= require fullcalendar/locale-all
 
-const datesAreOnSameDay = (first, second) =>
-    first === second
+function datesAreOnSameDay (first, second) {
+  return  first === second;
+}
 
 function colourNameToHex(colour)
 {
