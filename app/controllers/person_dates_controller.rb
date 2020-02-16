@@ -1,14 +1,37 @@
 class PersonDatesController < ApplicationController
   def create
     @date = PersonDate.take(permit_params)
-    redirect_to action: person_new_date_path(permit_params[:person_id])
+    redirect_to action: :index
   end
 
   def index
-    @person_dates = PersonDate.all
     @medics = Medic.all
-    @type = 'settimana'
-    render 'layouts/calendar'
+    respond_to do |format|
+      format.json {
+        if params[:medic_id].blank?
+          render json: PersonDate.where(date: params[:from].to_date..params[:to].to_date).map { |person_date|
+            {title: person_date.person_id != 1 ? person_date.person.bp.to_s + ' con ' + person_date.medic.name : 'Disponible con ' + person_date.medic.name,
+             start: person_date.start_time,
+             color: person_date.color,
+             resourceId: person_date.medic.id,
+             taked: person_date.taked?
+            }
+          }
+        else
+          render json: PersonDate.where(date: params[:from].to_date..params[:to].to_date, medic_id: params[:medic_id].to_i).map { |person_date|
+            {title: person_date.person_id != 1 ? person_date.person.bp.to_s + ' con ' + person_date.medic.name : 'Disponible con ' + person_date.medic.name,
+             start: person_date.start_time,
+             color: person_date.color,
+             resourceId: person_date.medic.id,
+             taked: person_date.taked?
+            }
+          }
+        end
+      }
+
+      format.html { @type = 'settimana'
+      render 'layouts/calendar' }
+    end
   end
 
   def show
@@ -45,6 +68,7 @@ class PersonDatesController < ApplicationController
   end
 
   private
+
   def permit_params
     params.require(:person_date).permit(:date, :time, :medic_id, :person_id)
   end

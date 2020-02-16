@@ -1,27 +1,44 @@
 require 'csv'
+require 'assets/Heuristic'
 
 class ApplicationController < ActionController::Base
   def index
     render 'layouts/search'
   end
 
+  def month_avalaible_dates
+    render template:'layouts/template_mini_calendar', locals:
+        {medic: Medic.find(params[:medic_id]),
+         dates:[],
+         id:params['calendar'],
+         events: params['events'],
+         edit: params[:edit]
+    },layout: false
+  end
+
+  def load_calendar_from_file
+    Heuristic.load_calendar
+    redirect_to person_dates_path
+  end
+
   def create_attention_capacity
-    attributes = %w[ident attention_type date t_start	capacity]
-    week = Date.tomorrow.at_beginning_of_week
-    file = CSV.generate(headers: true) do |csv|
-      csv << attributes
-      Medic.all.each do |medic|
-        attention = "Primaria"
-        attention = "Kinesiologia" unless medic.type==nil
-        medic.attention.each do |date|
-          date[1].each do |day|
-            occupied = '1'
-            occupied = '0' if PersonDate.where(medic_id: medic.id, date: (week+(day.to_i).day).to_s, time:date[0], person_id: 1).blank?
-            csv << [medic.id, attention, (week+(day.to_i).day).to_s, date[0], occupied]
-          end
-        end
-      end
+    Heuristic.create_attention_capacity params[:date].to_date
+    redirect_to person_dates_path
+  end
+
+  def create_patients
+    Heuristic.create_patients params[:date].to_date
+    redirect_to person_dates_path
+  end
+
+  def run_heuristic
+    date = params[:date].blank? ? Date.tomorrow : params[:date]
+    output_err = (Heuristic.run_heuristic date)
+    if !output_err.blank?
+      flash[:danger] = "La Ejecucion de la heuristica tuvo los problemas: #{output_err}"
+    else
+      flash[:info] = 'La Ejecucion de la heuristica fue correcta.'
     end
-    send_data file, filename: "data-#{Date.today.to_s}.csv", disposition: :attachment
-    end
+    redirect_to person_dates_path
+  end
 end

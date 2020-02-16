@@ -9,6 +9,12 @@
 </p>
 
 <p>
+  <strong> Sexo y edad: </strong>
+  <%= @person.comment %>
+</p>
+
+
+<p>
   <strong>Telefono: </strong>
   <%= @person.phone %>
 </p>
@@ -17,7 +23,6 @@
   <strong>Dias de tratamiento: </strong>
   <%= @person.number_of_days %>
 </p>
-
 
 <p>
   <strong> Descanso: </strong>
@@ -67,3 +72,22 @@
   <strong> Transporte: </strong>
   <strong>No</strong>
 <% end %>
+<div class='row'>
+     <div class='col'>
+       <strong>Fechas proximas citas Terapia Fisica</strong>
+       <br>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine), dates:@person.dates, id:'mini_calendar1',events: 'eventtf', edit: false}%>
+       <br>
+     </div>
+    <div class='col'>
+       <strong>Fechas proximas citas Atencion Primaria</strong>
+       <br>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.ap_dates, id:'mini_calendar2',events: 'eventap', edit: false}%>
+       <br>
+    </div>
+    <div class='col'></div>
+
+  </div>
+
+<%= link_to 'Editar', edit_person_path(@person) %>
+<%= link_to 'Volver', persons_path %>

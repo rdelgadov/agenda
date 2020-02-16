@@ -18,6 +18,11 @@
     <div id="content">
       <%-# <%= render 'layouts/navigation/header' -%>
       <div class="container-fluid">
+            <% flash.each do |type, msg| %>
+      <div class="alert alert-<%= type %>">
+        <%= msg %>
+      </div>
+    <% end %>
         <%= yield %>
       </div>
     </div>
@@ -25,8 +30,6 @@
 
   </div>
 </div>
-<% if flash[:error] %>
-  <div class="flash"><%= flash[:error] %></div>
-<% end %>
+
 </body>
 </html>

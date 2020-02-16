@@ -1,0 +1,33 @@
+<div class='mini_calendar' id='no_edit_mini_calendar'></div>
+<script>
+  var events = [<% unless @person.dates.blank? %>
+  <% @person.dates.each do |date| %>
+        {title: '', allDay: true, color:'#ffffff', start:new moment('<%= date.to_s(:utc) %>')},
+<% end %>
+
+  <% end %>];
+  // TODO: Take events and know if it is already or not.
+  // Do not duplicate the events.
+  // IMPORTANT! How can render events if change the month view.
+  $('#no_edit_mini_calendar').fullCalendar(
+    {
+      events: [],
+      header: {
+        right: 'today prev,next'
+      },
+      dayRender: function(date,cell) {
+        filtered_events = events.filter(function (el) {
+          return !datesAreOnSameDay(el.start._d, date._d);
+        });
+        if (filtered_events.length  !== events.length) {
+          cell.addClass('fc-highlight');
+        }
+      },
+      eventRender: function(){
+      },
+      locale: 'es',
+      height: 'auto',
+      defaultView: 'month',
+      themeSystem:'bootstrap4',
+      firstDay: 1
+    });</script>

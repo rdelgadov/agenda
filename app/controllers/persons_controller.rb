@@ -2,6 +2,8 @@ class PersonsController < ApplicationController
   def create
     @person = Person.new(person_params)
     @person.save!
+    @person.take_buckets person_params
+
     redirect_to person_new_date_path(@person)
   end
 
@@ -14,7 +16,8 @@ class PersonsController < ApplicationController
   end
 
   def new
-    @person = Person.new
+    @person = Person.new(kine: Kinesiologist.first.id, medic: Medic.first.id)
+
   end
 
   def new_date
@@ -33,7 +36,7 @@ class PersonsController < ApplicationController
 
   def search
     if Person.exists? bp: search_params[:bp]
-      @person = Person.where(search_params).first
+      @person = Person.find_by_bp(search_params[:bp])
       redirect_to @person
     else
       flash[:error] = 'El usuario no existe.'
@@ -44,7 +47,7 @@ class PersonsController < ApplicationController
   def update
     @person = Person.find(params[:id])
     if @person.update_attributes(person_params)
-      @person.dates = person_params[:dates]
+      @person.take_buckets person_params
       @person.save!
       redirect_to @person
     else
@@ -58,10 +61,18 @@ class PersonsController < ApplicationController
     @last_date = PersonDate.where(person_id: params[:id]).last
   end
 
+  def destroy
+    @person = Person.find(params[:id])
+    PersonDate.where(person_id: params[:id]).each(&:untake)
+    @person.destroy
+
+    redirect_to persons_path
+  end
+
   private
   def person_params
     print(params)
-    params.require(:person).permit(:name, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, dates: [].to_yaml )
+    params.require(:person).permit(:name, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, :kine, :medic, dates: [], ap_dates: [])
   end
   private
   def search_params

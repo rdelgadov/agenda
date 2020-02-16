@@ -1,7 +1,6 @@
 class KinesiologistsController < ApplicationController
   def calendar
-    @person_dates = PersonDate.where(medic_id: params[:id])
-    @medics = [Kinesiologist.find(params[:id])]
+    @medic_id = params[:id]
     @type = 'agendaDay'
 
     render 'layouts/calendar'

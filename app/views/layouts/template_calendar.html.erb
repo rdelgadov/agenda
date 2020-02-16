@@ -22,32 +22,27 @@
       defaultTimedEventDuration: '00:15:00',
       firstDay: 1,
       nowIndicator: true,
-      groupByDateAndResource: true,
-      resources:[
-        <% medics.each do |medic| %>
-           {
-             id: '<%= medic.id %>',
-             title: '<%= medic.name %>'
-           },
-        <% end %>
-      ],
-      events:[
-        <% person_dates.each do |person_date| %>
-           {
-             title: '<%= person_date.person.bp %> con <%= person_date.medic.name %>',
-             start: '<%= person_date.start_time %>',
-             description: '<%= person_date.medic.name  %>',
-             color: '<%= person_date.color %>',
-             resourceId: '<%= person_date.medic.id %>',
-             taked: <%= person_date.taked? %>
-           },
-
-        <% end %>
-      ],
+      events: function(start, end,timezone, callback) {
+        $.ajax({
+          url: '/person_dates',
+          type: 'GET',
+          dataType:'json',
+          data:{
+            from: start.format('YYYY-MM-DD'),
+            to: end.format('YYYY-MM-DD'),
+            <% unless medic_id.blank?%>
+            medic_id: <%= medic_id %>
+            <% end %>
+          },
+          success: function (data) {
+            callback(data)
+          }
+        })
+      },
       eventRender: function(eventObj, $el) {
         if (!eventObj.taked) {
           $el.find('.fc-bg').css('opacity',0.55);
-          $el.css('color', 'black')
+          $el.css('background-color', '#3a87ad')
         }
       },
       views: {

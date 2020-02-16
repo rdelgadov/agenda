@@ -1,4 +1,4 @@
-<%= form_with id: :person_form, model: @person, url: person_path, method: 'PATCH', local: true do |form| %>
+<%= form_with id: :person_form, model: @person, local: true do |form| %>
 
   <% if @person.errors.any? %>
     <div id="error_explanation">
@@ -17,6 +17,11 @@
   <p>
     <%= form.label :bp %><br>
     <%= form.text_field :bp %>
+  </p>
+
+  <p>
+    <%= form.label :sexo_Y_Edad %>
+    <%= form.text_field :comment %>
   </p>
 
   <p>
@@ -65,12 +70,34 @@
     <%= form.label :dias_tratamiento %>
     <%= form.number_field :number_of_days %>
   </p>
+  <div class='row'>
+     <div class='col'>
+       <strong>Fechas proximas citas Terapia Fisica</strong>
+       <br>
+        <p>
+          <%= form.label :kinesiologo %><br>
+          <%= form.collection_select :kine, Kinesiologist.all, :id , :name %>
+        </p>
+       <div id='kine_calendar'>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine),dates:@person.dates, id:'mini_calendar1',events: 'eventtf', edit: true}%>
+       </div>
+         <br>
+     </div>
+    <div class='col'>
+       <strong>Fechas proximas citas Atencion Primaria</strong>
+       <br>
+       <p>
+        <%= form.label :medico %><br>
+        <%= form.collection_select :medic, Medic.where(type: nil).all, :id , :name %>
+       </p>
+        <div id='medic_calendar'>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.ap_dates, id:'mini_calendar2',events: 'eventap', edit: true}%>
+      </div>
+      <br>
+    </div>
+    <div class='col'></div>
 
-  <%= form.label :fechas_proximas_citas %>
-  <br>
-  <%= render 'layouts/mini_calendar'%>
-  <br>
-
+  </div>
   <p>
     <%= form.label :transporte %>
     <%= form.check_box :transportation, {}, true, false %>
@@ -135,11 +162,37 @@
     }
   };
   $('#person_form').submit(function (event) {
-    console.log(1);
-    events.forEach(function(date,i){
-      var input = '<input type="hidden" name="person[dates][]" value="'+date.start._d+'"/>';
+    eventtf.forEach(function(date,i){
+      var input = '<input type="hidden" name="person[dates][]" value="'+  date.start.format('YYYY-MM-DD')+'"/>';
+      $('#person_form').append(input);
+    });
+    eventap.forEach(function(date,i){
+      var input = '<input type="hidden" name="person[ap_dates][]" value="'+date.start.format('YYYY-MM-DD')+'"/>';
       $('#person_form').append(input);
     });
     return true
   });
+
+  var kine = $('#person_kine');
+  var medic = $('#person_medic');
+  function poblate_calendar(medic,calendar,div,event){
+    $.ajax({
+      url: '/month_avalaible_dates',
+      type: 'GET',
+      data: {
+        medic_id: medic.val(),
+        calendar: calendar,
+        events: event,
+        edit: true
+      },
+      success: function(data) {
+        $('#'+div).html(data)
+      }
+
+    });
+  }
+  kine.change(function () {
+    poblate_calendar(kine,'mini_calendar1','kine_calendar','eventtf');
+  })
+
 </script>

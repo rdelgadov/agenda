@@ -25,23 +25,23 @@
     padding: 1%;
 }
 
-#mini_calendar
+.mini_calendar
 {
-    width: 150px;
+    width: 200px;
     margin: 0 20px;
     font-size: 10px;
     position: relative;
 }
 
-#mini_calendar > .fc-toolbar {
-    font-size: .9em;
-}
-#mini_calendar > .fc-toolbar h2 {
+.mini_calendar.fc-toolbar {
     font-size: 12px;
+}
+.mini_calendar > .fc-toolbar h2 {
+    font-size: 1em;
     white-space: normal !important;
 }
 /* click +2 more for popup */
-#mini_calendar > .fc-more-cell a {
+.mini_calendar.fc-more-cell a {
     display: block;
     width: 85%;
     margin: 1px auto 0 auto;
@@ -51,32 +51,37 @@
     overflow: hidden;
     height: 4px;
 }
-#mini_calendar > .fc-more-popover {
+.mini_calendar.fc-more-popover {
     width: 100px;
 }
-#mini_calendar > .fc-view-month .fc-event .fc-view-agendaWeek .fc-event .fc-content {
+.mini_calendar.fc-view-month, .mini_calendar.fc-event, .mini_calendar.fc-view-agendaWeek, .mini_calendar.fc-event, .mini_calendar.fc-content {
     font-size: 0;
     overflow: hidden;
     height: 2px;
 }
-#mini_calendar > .fc-view-agendaWeek .fc-event-vert {
+.mini_calendar.fc-view-agendaWeek, .mini_calendar.fc-event-vert {
     font-size: 0;
     overflow: hidden;
     width: 2px !important;
 }
-#mini_calendar > .fc-agenda-axis {
-    width: 20px !important;
+.mini_calendar.fc-agenda-axis {
+    width: 10px !important;
     font-size: .7em;
 }
-
-#mini_calendar > .fc-button-content {
+.mini_calendar.fc table{
+    font-size: 0.9em;
+}
+.mini_calendar.fc-button-content {
     padding: 0;
 }
-#mini_calendar > .fc-basic-view .fc-body .fc-row{
+.mini_calendar.fc-basic-view, .mini_calendar.fc-body, .mini_calendar.fc-row{
     min-height: 1em;
 }
-#mini_calendar > .fc-day{
+.mini_calendar.fc-day{
     height: 10px;
+}
+.mini_calendar.fc button{
+    font-size: 0.7em;
 }
 
 #table_new_person{

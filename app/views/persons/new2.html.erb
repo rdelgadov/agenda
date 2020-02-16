@@ -1,0 +1,167 @@
+<%= form_with id: :person_form, scope: :person, url: persons_path, local: true do |form| %>
+  <p>
+    <%= form.label :bp %><br>
+    <%= form.text_field :bp %>
+  </p>
+
+  <p>
+    <%= form.label :rut %><br>
+    <%= form.text_field :rut %>
+  </p>
+
+  <p>
+    <%= form.label :nombre %>
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <%= form.label :apellido_paterno %>
+    <%= form.text_field :first_name %>
+  </p>
+
+  <p>
+    <%= form.label :apellido_materno %>
+    <%= form.text_field :second_name %>
+  </p>
+
+  <p>
+    <%= form.label :reposo   %>
+    <%= form.check_box :rest, {}, true, false %>
+  </p>
+  <p>
+    <%= form.label :telefono %><br>
+    <%= form.text_field :phone %>
+  </p>
+
+  <p>
+    <%= form.label :comuna%>
+    <%= form.text_field :town %>
+  </p>
+  <p>
+    <%= form.label :calle %>
+    <%= form.text_field :address %>
+  </p>
+  <p>
+    <%= form.label :numero %>
+    <%= form.text_field :address_number %>
+  </p>
+
+  <p>
+    <%= form.label :dias_tratamiento %>
+    <%= form.number_field :number_of_days %>
+  </p>
+
+  <div class='row'>
+     <div class='col'>
+       <%=  %>
+       <%= form.label :fechas_proximas_citas_Terapia_Fisica %>
+       <br>
+       <%= render template:'layouts/template_mini_calendar', locals:{person: @person, dates:@person.dates, id:'mini_calendar1',events: 'eventtf', edit: true}%>
+       <br>
+     </div>
+    <div class='col'>
+      <%= form.label :fechas_proximas_citas_Atencion_Primaria %>
+       <br>
+       <%= render template:'layouts/template_mini_calendar', locals:{person: @person, dates:@person.ap_dates, id:'mini_calendar2',events: 'eventap', edit:true}%>
+       <br>
+    </div>
+    <div class='col'></div>
+  </div>
+  <p>
+    <%= form.label :transporte %>
+    <%= form.check_box :transportation, {}, true, false %>
+  </p>
+
+  <div id='transporte' style='display: none;'>
+    <p>
+      <input id='search_direction' type='button' value='buscar direccion'/>
+    </p>
+    <p>
+      <%= form.label :latitud %>
+      <%= form.text_field :latitude, value: 0 %>
+    </p>
+    <p>
+      <%= form.label :longitud %>
+      <%= form.text_field :longitude, value: 0 %>
+    </p>
+    <p>
+      <%= form.label :tipo_de_vehiculo %>
+      <%= form.select :vehicle_type, {ambulancia: 0, auto: 1} %>
+    </p>
+    <p>
+      <%= form.label :acompañante %>
+      <%= form.check_box :accompanied, {}, true, false %>
+    </p>
+    <p>
+      <%= form.label :tipo_de_viaje %>
+      <%= form.select :travels_type, {traer: 0, llevar: 1, 'traer y llevar': 2} %>
+    </p>
+  </div>
+  <p>
+    <%= form.submit :Agregar %>
+  </p>
+<% end %>
+<script type="text/javascript">
+  $('#search_direction').click(function(){
+    var query = document.getElementById('person_address').value + " " + document.getElementById('person_address_number').value + "," +document.getElementById('person_town').value;
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "https://us1.locationiq.com/v1/search.php?key=c77839a27bd92d&q=" + query + "&format=json",
+      "method": "GET"
+    };
+
+    $.ajax(settings).done(function (response) {
+      if (Array.isArray(response)){
+        $('#person_latitude').val(response[0].lat);
+        $('#person_longitude').val(response[0].lon);
+      }
+
+    });
+  });
+
+
+  var checkbox = document.getElementById('person_transportation');
+  var details_div = document.getElementById('transporte');
+  checkbox.onchange = function() {
+    if(this.checked) {
+      details_div.style['display'] = 'block';
+    } else {
+      details_div.style['display'] = 'none';
+    }
+  };
+  $('#person_form').submit(function (event) {
+    eventtf.forEach(function(date,i){
+      var input = '<input type="hidden" name="person[dates][]" value="'+date.start._d+'"/>';
+      $('#person_form').append(input);
+    });
+    eventap.forEach(function(date,i){
+      var input = '<input type="hidden" name="person[ap_dates][]" value="'+date.start._d+'"/>';
+      $('#person_form').append(input);
+    });
+    return true
+  });
+
+  var kine = $('#person_kine');
+  var medic = $('#person_medic');
+  function poblate_calendar(medic,calendar,div,event){
+    $.ajax({
+      url: '/month_avalaible_dates',
+      type: 'GET',
+      data: {
+        medic_id: medic.val(),
+        person_id: <%= @person.id %>,
+        calendar: calendar,
+        events: event,
+        edit: true
+      },
+      success: function(data) {
+        $('#'+div).html(data)
+      }
+
+    });
+  }
+  kine.change(function () {
+    poblate_calendar(kine,'mini_calendar1','kine_calendar','eventtf');
+  })
+</script>
