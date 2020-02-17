@@ -1,11 +1,10 @@
 class MedicsController < ApplicationController
   def calendar
-    @person_dates = PersonDate.where(medic_id: params[:id])
-    @medics = [Medic.find(params[:id])]
+    @medic_id = params[:id]
     @type = 'agendaDay'
+
     render 'layouts/calendar'
   end
-
   def create
     @medic = Medic.new(permit_params)
     @medic.save

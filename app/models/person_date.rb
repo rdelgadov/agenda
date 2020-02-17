@@ -11,6 +11,18 @@ class PersonDate < ApplicationRecord
                         min: ntime[1].to_i)
   end
 
+  def self.next_date_of_person id
+    PersonDate.where(person_id: id).where("date>=?",Date.tomorrow).order(date: :asc).first
+  end
+
+  def next_date
+    PersonDate.where(medic_id: medic_id,person_id: person_id).where("date>=?",Date.tomorrow).order(date: :asc).first
+  end
+
+  def is_next?
+    self.id == self.next_date.id
+  end
+
   def self.take params
     pd = self.where(medic_id: params[:medic_id], date: params[:date], time: params[:time], person_id: 1).first
     b = Bucket.where(medic_id: params[:medic_id], date:params[:date]).first

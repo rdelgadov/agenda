@@ -19,4 +19,8 @@ class Person < ApplicationRecord
       end
     end
   end
+
+  def next_date
+    PersonDate.next_date_of_person id
+  end
 end

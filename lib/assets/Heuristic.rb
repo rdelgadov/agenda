@@ -10,12 +10,12 @@ module Heuristic
         person = Person.new(bp: row["patient_id"], rut: row["patient_id"])
         person.save!
       end
-        pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: time).first
-        if !pd
-          print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
-        else
-          pd.update_attribute(:person_id, person.id)
-        end
+      pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: time).first
+      if !pd
+        print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
+      else
+        pd.update_attribute(:person_id, person.id)
+      end
     end
   end
 
@@ -29,9 +29,7 @@ module Heuristic
         attention = "Kinesiologia" unless medic.type==nil
         medic.attention.each do |date|
           date[1].each do |day|
-            occupied = '1'
-            occupied = '0' if PersonDate.where(medic_id: medic.id, date: (week+(day.to_i).day).to_s, time:date[0], person_id: 1).blank?
-            csv << [medic.id, attention, (week+(day.to_i).day).to_s, date[0], occupied]
+            csv << [medic.id, attention, (week+(day.to_i).day).to_s, date[0], 1]
           end
         end
       end
@@ -43,18 +41,21 @@ module Heuristic
     CSV.open(Rails.root.join("lib/heuristic/input/patients.csv"),'wb',headers: true) do |csv|
       csv << attributes
       Person.all.each do |person|
-        tp = 'no-transportation'
-        tp = 'pick_up-and-delivery' if person.transportation
+        tp = person.transportation ? 'pick_up-and-delivery' : 'no-transportation'
         vt = ''
         vt = '5633' if person.vehicle_type == 0
         vt = '5632' if person.vehicle_type == 1
-        person.buckets.where('date > ?',Date.tomorrow).each do |b|
-          if b.date >= date
-            pd = PersonDate.where(person_id: person.id, date: date, medic_id: b.medic_id).last
-            medic = 'Kinesiologia'
-            medic = 'Primaria' if b.medic.type.blank?
-            csv << [person.bp, b.date,medic,tp,person.latitude,person.longitude,(person.accompanied? ? 1:0),'','',b.medic_id, vt, (!person.rest.blank? ? 1:0), (pd.blank? ? '':pd.time), (pd.blank? ? '':pd.time), '', b.updated_at.to_date.to_s]
+        person.buckets.where(date: date).each do |b|
+          pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date-5.day .. date).last
+          if pd.blank?
+            reference_attention = ''
+            required_attention = ''
+          else
+            reference_attention = pd.time
+            required_attention = pd.time if pd.is_next? and date == pd.date
           end
+          medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
+          csv << [person.bp, b.date,medic,tp,person.latitude,person.longitude,(person.accompanied? ? 1:0),'','',b.medic_id, vt, (!person.rest.blank? ? 1:0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
         end
       end
     end
@@ -69,6 +70,7 @@ module Heuristic
       error = stderr.read
       if error.blank?
         FileUtils.cp(Dir.glob(Rails.root.join("lib/heuristic/input/output_schedule*.csv")).max_by {|f| File.mtime(f)}, Rails.root.join("lib/heuristic/input/output.csv"))
+        FileUtils.cp(Dir.glob(Rails.root.join("lib/heuristic/input/output_windows*.csv")).max_by {|f| File.mtime(f)}, Rails.root.join("lib/heuristic/input/window.csv"))
         Dir.glob(Rails.root.join("lib/heuristic/input/output_schedule*.csv")).max_by {|f| File.delete(f)}
         Dir.glob(Rails.root.join("lib/heuristic/input/output_windows*.csv")).max_by {|f| File.delete(f)}
         load_calendar

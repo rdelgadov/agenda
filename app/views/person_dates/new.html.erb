@@ -34,7 +34,7 @@
 <% end %>
   </div>
   <div class="col-6">
-      <%= render template:'layouts/template_calendar', locals: {medics: Medic.all, person_dates: PersonDate.all, type: "agendaDay" }%>
+      <%= render template:'layouts/template_calendar', locals: {medic_id: '',person_dates: PersonDate.all, type: "agendaDay" }%>
 
   </div>
 </div>
