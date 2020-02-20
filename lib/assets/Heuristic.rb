@@ -45,18 +45,21 @@ module Heuristic
         vt = ''
         vt = '5633' if person.vehicle_type == 0
         vt = '5632' if person.vehicle_type == 1
-        person.buckets.where(date: date).each do |b|
-          pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date-5.day .. date).last
-          if pd.blank?
-            reference_attention = ''
-            required_attention = ''
-          else
-            reference_attention = pd.time
-            required_attention = pd.time if pd.is_next? and date == pd.date
-          end
-          medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
-          csv << [person.bp, b.date,medic,tp,person.latitude,person.longitude,(person.accompanied? ? 1:0),'','',b.medic_id, vt, (!person.rest.blank? ? 1:0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
+        b = person.buckets.where(date: date).first
+        if b.blank?
+          next
         end
+        pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date-5.day .. date).last
+        if pd.blank?
+          reference_attention = ''
+          required_attention = ''
+        else
+          reference_attention = pd.time
+          required_attention = pd.time if pd.is_next? and date == pd.date
+        end
+        medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
+        csv << [person.bp, b.date,medic,tp,person.latitude,person.longitude,(person.accompanied? ? 1:0),'','',b.medic_id, vt, (!person.rest.blank? ? 1:0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
+
       end
     end
   end

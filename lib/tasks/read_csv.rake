@@ -33,5 +33,45 @@ namespace :read_csv do
 
     end
   end
+  desc "Load from achs csv"
+  task load_from_csv: :environment do
+    i=0
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/san_miguel.csv")), {headers: true, col_sep: ','})
+    table.by_row!.each do |row|
+      bp = row['BP_PACIENTE']
+      person = Person.find_by_bp(bp)
+      medic_id = row['NOMBRE_RESP_CITACION']
+      begin
+        medic_id = medic_id.to_i
+      rescue StandardError
+        print i
+        next
+      end
+      if !person
+        transportation = row['IND_TRANSPORTE']=='SI' ? true : false
+        latitude = row['LATITUD']
+        longitude = row['LONGITUD']
+        address = row['DIRECCION']
+        number = row['NUMERO']
+        town = row['COMUNA']
+        person = Person.new(bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, rest: true, town: town, address: address, address_number: number)
+        person.save!
+      end
+      date = row['FECHA_CITA']
+      time = row['HORA_CITA']
+      unless time
+        next
+      end
+      time = time[1..-1] if time[0]=='0'
+      begin
+        params = { medic_id: medic_id.to_i, person_id: person.id.to_i, date: date, time: time}
+        PersonDate.take params
+      rescue StandardError => e
+        print e.message
+        print "No se pudo cargar la fecha #{date} a la hora #{time} con el profesional #{medic_id} linea #{i.to_s}\n"
+      end
+      i+=1
+    end
+  end
 end
 
