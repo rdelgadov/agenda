@@ -40,6 +40,7 @@ class PersonDatesController < ApplicationController
 
   def new
     @medics = Medic.all.map(&:name)
+    @person_date = PersonDate.new
   end
 
   def create_medics_dates
@@ -48,7 +49,13 @@ class PersonDatesController < ApplicationController
       medic.create_dates params[:date].to_date
     end
     redirect_to action: :index
+  end
 
+  def untake
+    pd = PersonDate.find(params[:id])
+    person = Person.find(pd.person_id)
+    pd.untake
+    redirect_to person_calendar_edit_path(person)
   end
 
   def create_kinesiologist_dates

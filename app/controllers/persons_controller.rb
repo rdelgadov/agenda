@@ -21,7 +21,14 @@ class PersonsController < ApplicationController
   end
 
   def new_date
+    @person = Person.find(params[:id])
     render 'person_dates/new'
+  end
+
+  def calendar_edit
+    @dates = PersonDate.where('date>=?',Date.today).where(person_id: params[:id])
+    @person = Person.find(params[:id])
+    render 'person_dates/person_list'
   end
 
   def calendar

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   post 'people/create', to: 'persons#create', as: 'people'
   get 'persons/:id/calendar', to: 'persons#calendar', as: 'person_calendar'
   get 'persons/:id/calendar/new_date', to: 'persons#new_date', as: 'person_new_date'
+  get 'persons/:id/calendar/edit', to: 'persons#calendar_edit', as: 'person_calendar_edit'
   get 'medics/:id/calendar', to: 'medics#calendar', as: 'medic_calendar'
   get 'kinesiologists/:id/calendar', to: 'kinesiologists#calendar', as: 'kinesiologist_calendar'
   get 'person_dates/create_medics_dates', to: 'person_dates#create_medics_dates'
@@ -13,6 +14,8 @@ Rails.application.routes.draw do
   get 'month_avalaible_dates', to: 'application#month_avalaible_dates'
   get 'load_calendar_from_file', to: 'application#load_calendar_from_file'
   get 'run_heuristic', to: 'application#run_heuristic'
+  get 'person_dates/:id/untake', to: 'person_dates#untake', as:'untake_person_date'
+
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'
 end
