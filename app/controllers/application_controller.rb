@@ -6,6 +6,35 @@ class ApplicationController < ActionController::Base
     render 'layouts/search'
   end
 
+  def show_error_charging_date
+    i=0
+    file = File.open(Rails.root.join('lib/tasks/reporte.txt'),'w')
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/san_miguel.csv")), {headers: true, col_sep: ','})
+    table.by_row!.each do |row|
+      bp = row['BP_PACIENTE']
+      person = Person.find_by_bp(bp)
+      medic_id = row['NOMBRE_RESP_CITACION']
+      begin
+        medic_id = medic_id.to_i
+      rescue StandardError
+        print i
+        next
+      end
+      date = row['FECHA_CITA']
+      time = row['HORA_CITA']
+      unless time
+        next
+      end
+      time = time[1..-1] if time[0]=='0'
+      if PersonDate.where(medic_id: medic_id.to_i, person_id: person.id, date: date, time: time).blank?
+        file.puts "No se pudo cargar al paciente #{person.bp} fecha #{date} a la hora #{time} con el profesional #{medic_id} linea #{i.to_s}\n"
+      end
+      i+=1
+    end
+    file.close
+    send_file Rails.root.join('lib/tasks/reporte.txt')
+  end
+
   def month_avalaible_dates
     render template:'layouts/template_mini_calendar', locals:
         {medic: Medic.find(params[:medic_id]),
