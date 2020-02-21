@@ -16,10 +16,10 @@
   // IMPORTANT! How can render events if change the month view.
   $('#<%= id %>').fullCalendar(
       {
-        events: [],
         header: {
           right: 'today prev,next'
         },
+        events:[],
         <% if edit %>
         dayClick: function (date, jsEvent, view) {
           if (<%= events %>avalaible.includes(date.format('YYYY-MM-DD'))) {
