@@ -60,7 +60,7 @@ namespace :read_csv do
         address = row['DIRECCION']
         number = row['NUMERO']
         town = row['COMUNA']
-        person = Person.new(name: name, first_name: first_name, second_name: second_name, comment: comment, bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, rest: true, town: town, address: address, address_number: number, rest: rest)
+        person = Person.new(name: name, first_name: first_name, second_name: second_name, comment: comment, bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, town: town, address: address, address_number: number, rest: rest)
         person.save!
       end
       date = row['FECHA_CITA']
