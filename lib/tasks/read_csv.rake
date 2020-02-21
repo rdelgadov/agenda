@@ -36,6 +36,7 @@ namespace :read_csv do
   desc "Load from achs csv"
   task load_from_csv: :environment do
     i=0
+    file = File.open(Rails.root.join('lib/tasks/reporte.txt'),'w')
     table = CSV.parse(File.read(Rails.root.join("lib/tasks/san_miguel.csv")), {headers: true, col_sep: ','})
     table.by_row!.each do |row|
       bp = row['BP_PACIENTE']
@@ -48,13 +49,18 @@ namespace :read_csv do
         next
       end
       if !person
+        rest = row['REPOSO']=='SI' ? true : false
+        first_name= row['paciente-apellidop']
+        second_name = row['paciente-apellidom']
+        name = row['paciente-nombre']
+        comment = row['sexo-edad']
         transportation = row['IND_TRANSPORTE']=='SI' ? true : false
         latitude = row['LATITUD']
         longitude = row['LONGITUD']
         address = row['DIRECCION']
         number = row['NUMERO']
         town = row['COMUNA']
-        person = Person.new(bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, rest: true, town: town, address: address, address_number: number)
+        person = Person.new(name: name, first_name: first_name, second_name: second_name, comment: comment, bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, rest: true, town: town, address: address, address_number: number, rest: rest)
         person.save!
       end
       date = row['FECHA_CITA']
@@ -68,10 +74,11 @@ namespace :read_csv do
         PersonDate.take params
       rescue StandardError => e
         print e.message
-        print "No se pudo cargar la fecha #{date} a la hora #{time} con el profesional #{medic_id} linea #{i.to_s}\n"
+        file.puts "No se pudo cargar al paciente #{person.bp} fecha #{date} a la hora #{time} con el profesional #{medic_id} linea #{i.to_s}\n"
       end
       i+=1
     end
+    file.close
   end
 end
 
