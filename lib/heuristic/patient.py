@@ -95,15 +95,16 @@ class Patient:
 
     def add_attorder(self, att_order):
         self.attention_orders.append(att_order)
-        att_order._patient = self
-
-    def schedule_attorders(self, doctors_dict, min_time):
 
         # ordenes de atencion listadas segun ranking (ej: atencion secundaria,
         # y luego primaria) y por hora (aplica para ordenes con atencion fija,
         # en cuyo caso siempre quedan primero)
         self.attention_orders.sort(key=lambda order: ATTENTION_RANK[order.attention_type])
         self.attention_orders.sort(key=lambda order: order.required_time if order.required_time is not None else END_TIME)
+
+        att_order._patient = self
+
+    def schedule_attorders(self, doctors_dict, min_time):
 
         for att_order in self.attention_orders:
             # si orden no posee cita agendada, se busca una

@@ -119,8 +119,14 @@ class RouteVehicles(Event):
         while True:
 
             # hora del proximo evento de actualizacion del sistema (identificados por rank=0)
-            next_update = min([e.time for e in self.center.future_events if e.rank == 0], default=END_TIME)
-            self.center.vprint(f"---> Proximo evento de actualizacion del sistema es a las {bf.int2strtime(next_update)}.")
+            future_updates = [e.time for e in self.center.future_events if e.rank == 0]
+
+            if len(future_updates) == 0:
+                next_update = END_TIME
+                self.center.vprint("---> No existe ningun evento futuro de actualizacion del sistema.")
+            else:
+                next_update = min(future_updates)
+                self.center.vprint(f"---> Proximo evento de actualizacion del sistema es a las {bf.int2strtime(next_update)}.")
 
             # si no hay vehiculos disponibles antes del proximo evento, no se rutea
             available_vehicles = [v for v in self.center.vehicles.values() if max(v.release_time, self.time) < min(v.shift_end, next_update)]
@@ -172,15 +178,22 @@ class RouteVehicles(Event):
 
             for pat in self.center.dropoff_wait:
 
-                # hora del proximo taxi (entre los pacientes del batch que aun estan esperando traslado de regreso)
+                # hora del proximo taxi (entre los pacientes del batch que estan esperando traslado de regreso)
                 first_release = min([p.release_time for p in pat.batch.patients if p in self.center.dropoff_wait])
                 next_taxi = first_release + DEPARTURE_DELAY + MAX_WAIT_DROPOFF
 
-                # si algun paciente del batch aun esta en el centro, pero existe algun vehiculo que se disponibiliza
-                # posterior a su liberacion y antes de la hora del proximo taxi, entonces se posterga el traslado 
-                if any([p.release_time + DEPARTURE_DELAY <= v.release_time <= next_taxi
-                    for p in pat.batch.patients for v in self.center.vehicles.values() if p in self.center.at_center]):
-                    continue
+                # hora de la proxima liberacion (entre los pacientes del batch que aun siguen en el centro)
+                next_release = min([p.release_time + DEPARTURE_DELAY for p in pat.batch.patients if p in self.center.at_center], default=None)
+
+                # si la liberacion mas proxima ocurre antes del siguiente evento de taxi del batch, y hay
+                # mas de un vehiculo potencialmente disponible previo a esa hora, con al menos uno de ellos
+                # potencialmente disponible posterior a la primera liberacion, entonces se posterga el traslado 
+                if next_release is not None and next_release <= next_taxi:
+                    # el "+1" simboliza un epsilon de tiempo
+                    potential_vehicles = [v for v in self.center.vehicles.values() if max(v.release_time, self.time) < min(v.shift_end, next_taxi + 1)]
+                    
+                    if len(potential_vehicles) > 1 and any(v.shift_end > next_release for v in potential_vehicles):
+                        continue
 
                 # orden de transporte del paciente
                 tpt_order = pat.dropoff_order

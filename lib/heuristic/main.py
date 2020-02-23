@@ -2,6 +2,7 @@ import pandas as pd
 import datetime as dt
 import argparse
 import time
+import os
 import basicfunc as bf
 from center import Center
 from vehicle import Vehicle
@@ -54,19 +55,24 @@ if __name__ == "__main__":
     c.simulate_events()
     print(c)
 
-    # se guarda agendamiento y horas de referencia 
+    # se guarda, estadisticas, agendamiento y horas de referencia
+    patients_stats = []
+    vehicles_stats = []
     schedule_stats = []
     windows_stats = []
 
     file_time = dt.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
-    for doc in c.doctors.values():
-        for appt in doc.agenda:
-            if not appt.available:
-                appt_begin = bf.int2strtime(appt.start_time)
-                schedule_stats.append((doc.id, appt_begin, date, appt.attention_order._patient.id))
-
+    for veh in list(c.vehicles.values()) + list(c.taxis.values()):
+        dict_stats = veh.get_stats()
+        dict_stats["date"] = date
+        vehicles_stats.append(dict_stats)
+    
     for pat in c.patients.values():
+        dict_stats = pat.get_stats()
+        dict_stats["date"] = date
+        patients_stats.append(dict_stats)
+
         if pat.transport:
             pickup_time = bf.int2strtime(pat.pickup_order.trip.start_time)
         else:
@@ -75,10 +81,19 @@ if __name__ == "__main__":
         attention_time = bf.int2strtime(pat.attention_time)
         windows_stats.append((pat.id, attention_time, pickup_time))
 
+    for doc in c.doctors.values():
+        for appt in doc.agenda:
+            if not appt.available:
+                appt_begin = bf.int2strtime(appt.start_time)
+                schedule_stats.append((doc.id, appt_begin, date, appt.attention_order._patient.id))
 
+    df_patients = pd.DataFrame(patients_stats)
+    df_vehicles = pd.DataFrame(vehicles_stats)
     df_schedule = pd.DataFrame(schedule_stats, columns=["doctor_id","t_start","date","patient_id"])
     df_windows = pd.DataFrame(windows_stats, columns=["patient_id","attention_time","pickup_time"])
 
+    df_patients.to_csv(f"{folder}/output_patients_{file_time}.csv", index=False)
+    df_vehicles.to_csv(f"{folder}/output_vehicles_{file_time}.csv", index=False)
     df_schedule.to_csv(f"{folder}/output_schedule_{file_time}.csv", index=False)
     df_windows.to_csv(f"{folder}/output_windows_{file_time}.csv", index=False)
 

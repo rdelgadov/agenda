@@ -5,13 +5,13 @@ ATTENTION_RANK = {PRIMARY_ATTENTION: 1, SECONDARY_ATTENTION: 0} # orden agendami
 ATTENTION_DURATION = {PRIMARY_ATTENTION: 15, SECONDARY_ATTENTION: 60} # duracion atencion (minutos)
 
 # tiempos
-NEXT_APPT_BUFFER = 120 # buffer de inicio de ventana de tiempo de pickup con respecto a primera cita disponible
+NEXT_APPT_BUFFER = 90 #120 # buffer de inicio de ventana de tiempo de pickup con respecto a primera cita disponible
 LAST_APPT_BUFFER = 60 # buffer de termino de ventana de tiempo de pickup con respecto a ultima cita disponible
-DROPOFF_BUFFER = 150 # ancho ventana de tiempo de dropoff a partir de la hora de liberacion del paciente
+DROPOFF_BUFFER = 120#150 # ancho ventana de tiempo de dropoff a partir de la hora de liberacion del paciente
 
 VISIT_DURATION = 5 # tiempo espera vehiculos en nodos
 SETUP_DURATION = 30 # tiempo setup vehiculos en depot
-MAX_WAIT_DROPOFF = 90 # maxima espera por traslado de ir a dejar
+MAX_WAIT_DROPOFF = 60#90 # maxima espera por traslado de ir a dejar
 ARRIVAL_DELAY = 5 # tiempo traslado estacionamiento a sala de espera
 DEPARTURE_DELAY = 5 # tiempo traslado sala de espera a estacionamiento
 
