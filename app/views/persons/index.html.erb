@@ -2,7 +2,7 @@
 <div class="table-responsive">
 <table class="table table-hover">
   <tr>
-    <td id='table_new_person' colspan='6'> <%= link_to 'Añadir persona', new_person_path %></td>
+    <td id='table_new_person' colspan='6'> <%= link_to 'Añadir persona', new_person_path, class: "btn btn-secondary" %></td>
   </tr>
 
   <tr>
@@ -22,14 +22,15 @@
       <td><%= person.name %> <%= person.first_name %></td>
       <td><%= person.bp %></td>
       <td><%= person.phone %></td>
-      <td><%= link_to 'Agenda', person_calendar_path(person) %></td>
-      <td><%= link_to 'Modificar agenda', person_calendar_edit_path(person) %></td>
-      <td><%= link_to 'Agregar hora', person_new_date_path(person) %></td>
-      <td><%= link_to 'Ver', person_path(person) %></td>
-      <td><%= link_to 'Editar', edit_person_path(person) %></td>
+      <td><%= link_to 'Agenda', person_calendar_path(person), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Modificar agenda', person_calendar_edit_path(person), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Agregar hora', person_new_date_path(person), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Detalles', person_path(person), class: 'btn btn-info' %></td>
+      <td><%= link_to 'Editar', edit_person_path(person), class: 'btn btn-secondary' %></td>
       <td><%= link_to 'Eliminar', person_path(person),
               method: :delete,
-              data: { confirm: 'Estas seguro?' } %></td>
+              data: { confirm: 'Estas seguro?' }, class: 'btn btn-danger'
+      %></td>
     </tr>
   <% end %>
 

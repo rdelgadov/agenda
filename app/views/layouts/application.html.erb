@@ -20,7 +20,7 @@
       <div class="container-fluid">
             <% flash.each do |type, msg| %>
       <div class="alert alert-<%= type %>">
-        <%= msg %>
+        <h3><%= msg %></h3>
       </div>
     <% end %>
         <%= yield %>

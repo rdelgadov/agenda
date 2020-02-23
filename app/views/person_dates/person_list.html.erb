@@ -13,9 +13,9 @@
     <tr>
       <td><%= date.date %></td>
       <td><%= date.time %></td>
-      <td><%= link_to date.medic.name , medic_path(date.medic)  %></td>
-      <td><%= link_to 'Ver', person_date_path(date) %></td>
-      <td><%= link_to 'Liberar', untake_person_date_path(date) %></td>
+      <td><%= link_to date.medic.name , medic_path(date.medic), class: 'btn btn-primary'  %></td>
+      <td><%= link_to 'Ver', person_date_path(date), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Liberar', untake_person_date_path(date), class: 'btn btn-primary' %></td>
     </tr>
   <% end %>
 </table>

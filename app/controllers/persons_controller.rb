@@ -79,7 +79,7 @@ class PersonsController < ApplicationController
   private
   def person_params
     print(params)
-    params.require(:person).permit(:name, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, :kine, :medic, dates: [], ap_dates: [])
+    params.require(:person).permit(:name, :comment, :employ, :emergency_type, :phone, :rut, :bp, :first_name, :second_name, :rest, :town, :address, :address_number, :number_of_days, :transportation, :latitude, :longitude, :vehicle_type, :accompanied, :travels_type, :kine, :medic, dates: [], ap_dates: [])
   end
   private
   def search_params

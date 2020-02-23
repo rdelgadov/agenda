@@ -70,4 +70,9 @@ class ApplicationController < ActionController::Base
     end
     redirect_to person_dates_path
   end
+
+  def generate_262
+    csv_file = Heuristic.generate_262 params[:date]
+    send_data csv_file
+  end
 end

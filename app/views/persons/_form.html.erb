@@ -15,67 +15,70 @@
   <% end %>
 
   <p>
-    <%= form.label :bp %><br>
+    <strong><%= form.label :bp %></strong>
     <%= form.text_field :bp %>
   </p>
 
   <p>
-    <%= form.label :sexo_Y_Edad %>
+    <strong><%= form.label :sexo_Y_Edad %></strong>
     <%= form.text_field :comment %>
   </p>
 
   <p>
-    <%= form.label :rut %><br>
+    <strong><%= form.label :rut %></strong>
     <%= form.text_field :rut %>
   </p>
 
   <p>
-    <%= form.label :nombre %>
+    <strong><%= form.label :nombre %></strong>
     <%= form.text_field :name %>
   </p>
 
   <p>
-    <%= form.label :apellido_paterno %>
+    <strong><%= form.label :apellido_paterno %></strong>
     <%= form.text_field :first_name %>
   </p>
 
   <p>
-    <%= form.label :apellido_materno %>
+    <strong><%= form.label :apellido_materno %></strong>
     <%= form.text_field :second_name %>
   </p>
-
   <p>
-    <%= form.label :reposo   %>
+    <strong><%= form.label :empleo %></strong>
+    <%= form.text_field :employ %>
+  </p>
+  <p>
+    <strong><%= form.label :tipo_de_emergencia %></strong>
+    <%= form.text_field :emergency_type %>
+  </p>
+  <p>
+    <strong><%= form.label :reposo   %></strong>
     <%= form.check_box :rest, {}, true, false %>
   </p>
   <p>
-    <%= form.label :telefono %><br>
+    <strong><%= form.label :telefono %></strong>
     <%= form.text_field :phone %>
   </p>
 
   <p>
-    <%= form.label :comuna%>
+    <strong><%= form.label :comuna%></strong>
     <%= form.text_field :town %>
   </p>
   <p>
-    <%= form.label :calle %>
+    <strong><%= form.label :calle %></strong>
     <%= form.text_field :address %>
   </p>
   <p>
-    <%= form.label :numero %>
+    <strong><%= form.label :numero %></strong>
     <%= form.text_field :address_number %>
   </p>
 
-  <p>
-    <%= form.label :dias_tratamiento %>
-    <%= form.number_field :number_of_days %>
-  </p>
   <div class='row'>
      <div class='col'>
        <strong>Fechas proximas citas Terapia Fisica</strong>
        <br>
         <p>
-          <%= form.label :kinesiologo %><br>
+          <strong><%= form.label :kinesiologo %><br></strong>
           <%= form.collection_select :kine, Kinesiologist.all, :id , :name %>
         </p>
        <div id='kine_calendar'>
@@ -87,7 +90,7 @@
        <strong>Fechas proximas citas Atencion Primaria</strong>
        <br>
        <p>
-        <%= form.label :medico %><br>
+        <strong><%= form.label :medico %><br></strong>
         <%= form.collection_select :medic, Medic.where(type: nil).all, :id , :name %>
        </p>
         <div id='medic_calendar'>
@@ -99,37 +102,42 @@
 
   </div>
   <p>
-    <%= form.label :transporte %>
+    <strong><%= form.label :transporte %></strong>
     <%= form.check_box :transportation, {}, true, false %>
   </p>
 
-  <div id='transporte' style='display: none;'>
+  <div id='transporte' style="display:<%= @person.transportation ? 'block':'none' %>;">
     <p>
       <input id='search_direction' type='button' value='buscar direccion'/>
     </p>
     <p>
-      <%= form.label :latitud %>
-      <%= form.text_field :latitude, value: 0 %>
+      <strong><%= form.label :latitud %></strong>
+      <%= form.text_field :latitude%>
     </p>
     <p>
-      <%= form.label :longitud %>
-      <%= form.text_field :longitude, value: 0 %>
+      <strong><%= form.label :longitud %></strong>
+      <%= form.text_field :longitude%>
     </p>
     <p>
-      <%= form.label :tipo_de_vehiculo %>
-      <%= form.select :vehicle_type, {ambulancia: 0, auto: 1} %>
-    </p>
-    <p>
-      <%= form.label :acompañante %>
+      <strong><%= form.label :acompañante %></strong>
       <%= form.check_box :accompanied, {}, true, false %>
     </p>
     <p>
-      <%= form.label :tipo_de_viaje %>
-      <%= form.select :travels_type, {traer: 0, llevar: 1, 'traer y llevar': 2} %>
+      <strong><%= form.label :tipo_de_viaje %></strong>
+      <%= form.select :travels_type, {'llevar traer en furgon': 101,
+                                      'llevar traer en ambulancia': 102,
+                                      'llevar traer en furgon con silla de ruedas': 103,
+                                      'llevar traer sentado en tixi': 104,
+                                      'llevar en furgon':105,
+                                      'llevar en ambulancia':106,
+                                      'llevar sentado en tixi': 108,
+                                      'llevar con pierna extendida':110,
+                                      'llamado a central de rescate':111,
+                                      'llevar traer con pierna extendida': 112} %>
     </p>
   </div>
   <p>
-    <%= form.submit :Enviar %>
+    <%= form.submit :Enviar, class: 'btn btn-primary' %>
   </p>
 <% end %>
 <script type="text/javascript">

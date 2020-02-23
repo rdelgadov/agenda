@@ -48,32 +48,13 @@ namespace :read_csv do
         print i
         next
       end
-      if !person
-        rest = row['REPOSO']=='SI' ? true : false
-        first_name= row['paciente-apellidop']
-        second_name = row['paciente-apellidom']
-        name = row['paciente-nombre']
-        comment = row['sexo-edad']
-        transportation = row['IND_TRANSPORTE']=='SI' ? true : false
-        latitude = row['LATITUD']
-        longitude = row['LONGITUD']
-        address = row['DIRECCION']
-        number = row['NUMERO']
-        town = row['COMUNA']
-        person = Person.new(name: name, first_name: first_name, second_name: second_name, comment: comment, bp:bp, transportation: transportation, latitude: latitude, longitude: longitude, town: town, address: address, address_number: number, rest: rest)
-        person.save!
-      end
       date = row['FECHA_CITA']
       time = row['HORA_CITA']
       unless time
         next
       end
       time = time[1..-1] if time[0]=='0'
-      begin
-        params = { medic_id: medic_id.to_i, person_id: person.id.to_i, date: date, time: time}
-        PersonDate.take params
-      rescue StandardError => e
-        print e.message
+      if PersonDate.where(medic_id: medic_id.to_i, person_id: person.id.to_i, date: date, time: time).blank?
         file.puts "No se pudo cargar al paciente #{person.bp} fecha #{date} a la hora #{time} con el profesional #{medic_id} linea #{i.to_s}\n"
       end
       i+=1

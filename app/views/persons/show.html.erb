@@ -62,11 +62,7 @@
   </p>
   <p>
     <strong> Tipo de vehiculo: </strong>
-    <% if @person.vehicle_type %>
-      <strong> Ambulancia</strong>
-    <% else %>
-      <strong> Auto </strong>
-    <% end %>
+    <strong> Furgon </strong>
   </p>
 <% else %>
   <strong> Transporte: </strong>
@@ -88,6 +84,9 @@
     <div class='col'></div>
 
   </div>
-
-<%= link_to 'Editar', edit_person_path(@person) %>
-<%= link_to 'Volver', persons_path %>
+<div>
+<%= link_to 'Volver', persons_path, method: 'get', class: 'btn btn-secondary' %>
+<%= link_to 'Editar', edit_person_path(@person) , class: 'btn btn-primary' %>
+<%= link_to 'Modificar Agenda', person_calendar_edit_path(@person), class: 'btn btn-primary' %>
+<%= link_to 'Agregar hora', person_new_date_path(@person) , class: 'btn btn-primary' %>
+</div>

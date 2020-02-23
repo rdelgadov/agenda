@@ -1,11 +1,8 @@
 <%= form_with scope: :person, url: persons_search_path, method: 'get', local: true do |form| %>
   <p>
-    <%= form.label :bp %><br>
-    <%= form.text_field :bp %>
-  </p>
+    <h3><strong>Buscar por <%= form.label :bp %><br></strong></h3>
+    <%= form.text_field :bp %> <%= form.submit :Buscar, class: 'btn btn-primary'%>
 
-  <p>
-    <%= form.submit :Buscar %>
-  </p>
 <% end %>
-<%= link_to 'Nuevo ingreso', new_person_path %>
+<p></p>
+<%= link_to 'Nuevo ingreso', new_person_path,  class: 'btn btn-outline-primary'%>

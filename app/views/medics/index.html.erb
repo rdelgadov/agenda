@@ -16,9 +16,9 @@
       <td><%= medic.name %></td>
       <td><%= medic.rut %></td>
       <td><%= medic.phone %></td>
-      <td><%= link_to 'Ver agenda', medic_calendar_path(medic) %></td>
-      <td><%= link_to 'Ver', medic_path(medic) %></td>
-      <td><%= link_to 'Editar', edit_medic_path(medic) %></td>
+      <td><%= link_to 'Ver agenda', medic_calendar_path(medic), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Ver', medic_path(medic), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Editar', edit_medic_path(medic), class: 'btn btn-primary' %></td>
     </tr>
   <% end %>
 </table>

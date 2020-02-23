@@ -15,6 +15,9 @@ module Heuristic
         print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
       else
         pd.update_attribute(:person_id, person.id)
+        if person.reference_attention_time.blank?
+          person.update_attribute(:reference_attention_time,time)
+        end
       end
     end
   end
@@ -43,18 +46,16 @@ module Heuristic
       Person.all.each do |person|
         tp = person.transportation ? 'pick_up-and-delivery' : 'no-transportation'
         vt = ''
-        vt = '5633' if person.vehicle_type == 0
-        vt = '5632' if person.vehicle_type == 1
+        vt = '5632'
         b = person.buckets.where(date: date).first
         if b.blank?
           next
         end
-        pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date-5.day .. date).last
+        reference_attention = person.reference_attention_time
+        pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date-7.day .. date).last
         if pd.blank?
-          reference_attention = ''
           required_attention = ''
         else
-          reference_attention = pd.time
           required_attention = pd.time if pd.is_next? and date == pd.date
         end
         medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
@@ -82,6 +83,22 @@ module Heuristic
       end
     end
     error
+  end
+
+  def self.generate_262 date=Date.tomorrow
+    csv = CSV.generate do |csv|
+      csv << ['Paciente','Transporte','Descripcion Acompañante','UO que documenta','Fecha ejecución Transporte','Hora Ejecución Transporte','Descripción estado','Número Entrega','Apellido 1 estandarizado','Nombre de pila estandarizado','Desc. Sentido','Población','Calle Origen','Número Origen','Población','Calle Destino','Número Destino','Teléfono 1','Hora Entrega','Latitud','Longitud']
+      PersonDate.where(date: date).where.not(person_id: 1).each do |pd|
+        person = Person.find(pd.person_id)
+        unless person.transportation
+          next
+        end
+        companion = person.accompanied ? 'Si':'No'
+        uo = Medic.find(pd.medic_id).type.blank? ? 'MIGTCAPR':'MIGTTF'
+        csv << [person.bp,person.travels_type,companion,uo,date.strftime('%d-%m-%Y'),pd.time.to_time.strftime('%I:%M%p'),'Solicitado','',person.first_name,person.name,]
+      end
+    end
+
   end
 
 end
