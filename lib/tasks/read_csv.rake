@@ -61,5 +61,21 @@ namespace :read_csv do
     end
     file.close
   end
+  desc "Load directions"
+  task load_directions: :environment do
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/direcciones.csv")), {headers: true, col_sep: ','})
+    table.by_row!.each do |row|
+      begin
+        bp = row['perfil'].to_i
+      rescue StandardError => e
+        next
+      end
+      person = Person.find_by_bp(bp)
+      if person
+        person.update_attribute :latitude, row['latitud_perfil']
+        person.update_attribute :longitude, row['longitud_perfil']
+      end
+    end
+  end
 end
 
