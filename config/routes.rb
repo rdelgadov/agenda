@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get 'run_heuristic', to: 'application#run_heuristic'
   get 'person_dates/:id/untake', to: 'person_dates#untake', as:'untake_person_date'
   get 'get_file', to: 'application#show_error_charging_date'
+  get 'medics/:id/next_date_for_patients', to: 'person_dates#next_date_for_patients'
 
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'

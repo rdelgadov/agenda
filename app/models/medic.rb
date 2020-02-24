@@ -15,6 +15,16 @@ class Medic < ApplicationRecord
         available
     end
 
+    def next_dates_for_my_patients date=Date.today
+        dates = []
+        PersonDate.where(medic_id: id, date: date).where.not(person_id: 1).each do |pd|
+            unless pd.next_date(date+1.day).blank?
+                dates << pd.next_date(date+1.day)
+            end
+        end
+        dates.sort_by{|d| [d.date, d.time.to_time]}
+    end
+
     def create_dates date=Date.today
         week = date.at_beginning_of_week
         attention.each do |attention|

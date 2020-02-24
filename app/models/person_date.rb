@@ -15,8 +15,8 @@ class PersonDate < ApplicationRecord
     PersonDate.where(person_id: id).where("date>=?",Date.tomorrow).order(date: :asc).first
   end
 
-  def next_date
-    PersonDate.where(medic_id: medic_id,person_id: person_id).where("date>=?",Date.tomorrow).order(date: :asc).first
+  def next_date date=Date.tomorrow
+    PersonDate.where(medic_id: medic_id,person_id: person_id).where("date>=?",date).order(date: :asc).first
   end
 
   def is_next?

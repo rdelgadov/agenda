@@ -74,6 +74,12 @@ class PersonDatesController < ApplicationController
     end
   end
 
+  def next_date_for_patients
+    date = params[:date].blank? ? date.Today : params[:date].to_date
+    @dates = Medic.find(params[:id]).next_dates_for_my_patients date
+    render 'person_dates/index',layout: false
+  end
+
   private
 
   def permit_params
