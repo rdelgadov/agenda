@@ -1,3 +1,12 @@
+<style type="text/css">
+@media print{
+  body{ background-color:#FFFFFF; background-image:none; color:#000000 }
+  #ad{ display:none;}
+  #leftbar{ display:none;}
+  #contentarea{ width:100%;}
+}
+</style>
+<div class="print">
 <h1>Listado de proximas citas</h1>
 
 <table class="table">
@@ -6,7 +15,6 @@
     <th>Hora</th>
     <th>Persona</th>
     <th>Medico</th>
-    <th></th>
   </tr>
 
   <% @dates.each do |date| %>
@@ -18,3 +26,4 @@
     </tr>
   <% end %>
 </table>
+</div>

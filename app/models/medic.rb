@@ -37,7 +37,7 @@ class Medic < ApplicationRecord
                     personal.person_id = 1
                     b.update_attribute :capacity, b.capacity+1
                 end
-            end
+                end
         end
     end
 end

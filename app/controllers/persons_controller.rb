@@ -8,7 +8,7 @@ class PersonsController < ApplicationController
   end
 
   def index
-    @persons = Person.all[1..-1]
+    @persons = Person.all[1..-1].reverse
   end
 
   def edit
@@ -47,7 +47,7 @@ class PersonsController < ApplicationController
       redirect_to @person
     else
       flash[:error] = 'El usuario no existe.'
-      redirect_to '/'
+      redirect_to '/persons'
     end
   end
 

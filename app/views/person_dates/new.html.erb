@@ -1,40 +1,41 @@
 <div class="row">
-<div class="col">
-<%= form_with scope: :person_date, url: person_dates_path, local: true do |form| %>
-  <p>
-    <%= form.label :fecha %><br>
-    <%= form.date_field :date, value: Date.tomorrow%>
-  </p>
+  <div class="col">
+    <%= form_with scope: :person_date, url: person_dates_path, local: true do |form| %>
+      <p>
+        <%= form.label :fecha %><br>
+        <%= form.date_field :date, value: Date.tomorrow %>
+      </p>
 
-  <p>
-    <%= form.label :hora %><br>
-    <%= form.select :time, Medic.find(@person.medic).available_dates(Date.tomorrow).map{|date| [date.time,date.time]}  %>
-  </p>
+      <p>
+        <%= form.label :medico %><br>
+        <%= form.collection_select :medic_id, Medic.all, :id, :name, {selected: @person.medic} %>
+      </p>
 
-  <p>
-    <%= form.label :medico %><br>
-    <%= form.collection_select :medic_id, Medic.all, :id , :name, {selected: @person.medic}%>
-  </p>
+      <p>
+        <%= form.label :hora %><br>
+        <%= form.select :time, Medic.find(@person.medic).available_dates(Date.tomorrow).map { |date| [date.time, date.time] } %>
+      </p>
 
-  <% if params[:id] %>
-    <%= form.text_field :person_id, value: params[:id], class: 'hidden' %>
-  <% else %>
 
-  <p>
-    <%= form.label :persona %><br>
-    <%= form.collection_select :person_id, Person.all, :id, :name %>
+      <% if params[:id] %>
+        <%= form.text_field :person_id, value: params[:id], class: 'hidden' %>
+      <% else %>
 
-  </p>
+        <p>
+          <%= form.label :persona %><br>
+          <%= form.collection_select :person_id, Person.all, :id, :name %>
+
+        </p>
+      <% end %>
+
+      <p>
+        <%= form.submit :Agendar, class: 'btn btn-primary' %>
+      </p>
+
     <% end %>
-
-  <p>
-    <%= form.submit :Agendar, class: 'btn btn-primary'%>
-  </p>
-
-<% end %>
   </div>
   <div class="col-6">
-      <%= render template:'layouts/template_calendar', locals: {medic_id: '',person_dates: PersonDate.all, type: "agendaDay" }%>
+    <%= render template: 'layouts/template_calendar', locals: {medic_id: '', person_dates: PersonDate.all, type: "agendaDay"} %>
 
   </div>
 </div>
@@ -42,15 +43,16 @@
 <script>
   var date = $('#person_date_date');
   var medic = $('#person_date_medic_id');
-  function poblate_date(){
+
+  function poblate_date() {
     $.ajax({
-      url:'available_dates',
+      url: 'available_dates',
       type: 'GET',
-      data:{
+      data: {
         medic_id: medic.val(),
         date: date.val()
       },
-      success: function(data){
+      success: function (data) {
         options = $('#person_date_time')[0].options;
         options.length = 0;
         data.forEach(function (option) {
@@ -61,13 +63,14 @@
       }
     });
   }
-  date.change(function(){
+
+  date.change(function () {
     var date = moment($(this).val(), "YYYY-MM-DD");
     $('#calendar').fullCalendar('gotoDate', date);
     poblate_date();
   });
 
-  medic.change(function(){
+  medic.change(function () {
     poblate_date();
   })
 
