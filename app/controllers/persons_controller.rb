@@ -17,7 +17,6 @@ class PersonsController < ApplicationController
 
   def new
     @person = Person.new(kine: Kinesiologist.first.id, medic: Medic.first.id)
-
   end
 
   def new_date
@@ -25,9 +24,15 @@ class PersonsController < ApplicationController
     render 'person_dates/new'
   end
 
+  def untake_bucket
+    Bucket.find(params[:bucket_id]).untake(params[:id])
+    redirect_to person_calendar_edit_path(params[:id])
+  end
+
   def calendar_edit
-    @dates = PersonDate.where('date>=?',Date.today).where(person_id: params[:id])
+    @dates = PersonDate.where('date>=?',Date.today).where(person_id: params[:id]).order(date: :asc)
     @person = Person.find(params[:id])
+    @buckets = @person.buckets.order(date: :asc).select{|b| @dates.map{|d| [d.date,d.medic_id]}.exclude? [b.date,b.medic_id]}
     render 'person_dates/person_list'
   end
 
@@ -64,7 +69,6 @@ class PersonsController < ApplicationController
 
   def show
     @person = Person.find(params[:id])
-    #TODO: replace the last date for next date.
     @last_date = PersonDate.where(person_id: params[:id]).last
   end
 

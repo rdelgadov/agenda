@@ -18,4 +18,17 @@
       <td><%= link_to 'Liberar', untake_person_date_path(date), class: 'btn btn-primary' %></td>
     </tr>
   <% end %>
+
+  <td colspan='5'><h1>Dias con cita tomada</h1></td>
+  <% @buckets.each do |bucket| %>
+    <tr>
+      <td><%= bucket.date %></td>
+      <td></td>
+      <td><%= link_to bucket.medic.name , medic_path(bucket.medic), class: 'btn btn-primary'  %></td>
+      <td></td>
+      <td><%= link_to 'Liberar', untake_bucket_path(@person.id,bucket.id), class: 'btn btn-primary' %></td>
+
+    </tr>
+
+  <% end %>
 </table>

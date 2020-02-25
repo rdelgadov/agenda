@@ -82,7 +82,7 @@
           <%= form.collection_select :kine, Kinesiologist.all, :id , :name %>
         </p>
        <div id='kine_calendar'>
-       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine),dates:@person.dates, id:'mini_calendar1',events: 'eventtf', edit: true}%>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine),dates:@person.buckets.where(medic_id:@person.kine).map(&:date), id:'mini_calendar1',events: 'eventtf', edit: true}%>
        </div>
          <br>
      </div>
@@ -94,7 +94,7 @@
         <%= form.collection_select :medic, Medic.where(type: nil).all, :id , :name %>
        </p>
         <div id='medic_calendar'>
-       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.ap_dates, id:'mini_calendar2',events: 'eventap', edit: true}%>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.buckets.where(medic_id:@person.medic).map(&:date), id:'mini_calendar2',events: 'eventap', edit: true}%>
       </div>
       <br>
     </div>
@@ -191,6 +191,7 @@
         medic_id: medic.val(),
         calendar: calendar,
         events: event,
+        person_id: <%= @person.id %>,
         edit: true
       },
       success: function(data) {
@@ -202,5 +203,7 @@
   kine.change(function () {
     poblate_calendar(kine,'mini_calendar1','kine_calendar','eventtf');
   })
-
+  medic.change(function() {
+    poblate_calendar(medic,'mini_calendar2','medic_calendar', 'eventap');
+  })
 </script>
