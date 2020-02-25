@@ -6,24 +6,25 @@ class Person < ApplicationRecord
   end
 
   def take_buckets person_params
+    taked_buckets = []
     unless person_params[:dates].blank?
       person_params[:dates].each do |date|
         b = Bucket.where(medic_id: person_params[:kine],date: date).first
         b.take self.id
-      end
-      self.buckets.each do |b|
-        b.untake(self.id) unless person_params[:dates].include? b.date.to_s
+        taked_buckets << b.id
       end
     end
     unless person_params[:ap_dates].blank?
       person_params[:ap_dates].each do |date|
         b = Bucket.where(medic_id: person_params[:medic],date: date).first
         b.take self.id
+        taked_buckets << b.id
       end
       self.buckets.each do |b|
-        b.untake(self.id) unless person_params[:ap_dates].include? b.date.to_s
+        b.untake(self.id) if taked_buckets.exclude? b.id
       end
     end
+
   end
 
   def to_csv
