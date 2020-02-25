@@ -45,6 +45,10 @@ class PersonDate < ApplicationRecord
     false
   end
 
+  def to_csv
+    [self.medic_id, Person.find(person_id).bp, self.date.strftime("%F"), self.time]
+  end
+
   def color
     medic.color
   end

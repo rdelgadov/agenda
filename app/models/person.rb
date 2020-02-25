@@ -20,6 +20,10 @@ class Person < ApplicationRecord
     end
   end
 
+  def to_csv
+    [self.bp,self.name,self.first_name,self.second_name,self.phone,self.rest,self.transportation,self.latitude,self.longitude,self.vehicle_type,self.town,self.address,self.travels_type,self.medic,self.kine,self.comment,self.reference_attention_time,self.employ,self.emergency_type]
+  end
+
   def next_date
     PersonDate.next_date_of_person id
   end

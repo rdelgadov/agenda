@@ -40,4 +40,7 @@ class Medic < ApplicationRecord
                 end
         end
     end
+    def to_csv
+        [self.id, self.name, self.type.blank? ? 'Atencion Primaria':'Kinesiologia']
+    end
 end
