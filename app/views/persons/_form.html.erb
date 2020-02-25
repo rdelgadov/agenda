@@ -191,7 +191,7 @@
         medic_id: medic.val(),
         calendar: calendar,
         events: event,
-        <% if @person %>
+        <% if @person.id %>
         person_id: <%= @person.id %>,
         <% end %>
         edit: true
