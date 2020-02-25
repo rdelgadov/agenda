@@ -22,6 +22,16 @@ module Heuristic
     end
   end
 
+  def self.load_pickuptime
+    table = CSV.parse(File.read(Rails.root.join("lib/heuristic/input/window.csv")), {headers:true, col_sep: ','})
+    table.by_row.each do |row|
+      time = row["pickup_time"]
+      time = row["pickup_time"][1..-1] if row['pickup_time'][0]=='0'
+      person = Person.find_by_bp(row["patient_id"])
+      person.update_attribute(:reference_pickup_time, time) unless time.blank? if person
+
+  end
+
   def self.create_attention_capacity date=Date.tomorrow
     week = date.at_beginning_of_week
     attributes = %w[ident attention_type date t_start	capacity]
@@ -78,6 +88,7 @@ module Heuristic
         Dir.glob(Rails.root.join("lib/heuristic/input/output_schedule*.csv")).max_by {|f| File.delete(f)}
         Dir.glob(Rails.root.join("lib/heuristic/input/output_windows*.csv")).max_by {|f| File.delete(f)}
         load_calendar
+        load_pickuptime
       else
         print error
       end

@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   def dump_db
     if params.has_key? :patients
       patients = CSV.generate do |csv|
-        csv << %w[bp name first_name second_name phone rest trasnportation latitude longitude vehicle_type comuna address address_number travels_type medic kine comment reference_attention_time employ emergency_type accompanied]
+        csv << %w[bp name first_name second_name phone rest trasnportation latitude longitude vehicle_type comuna address address_number travels_type medic kine comment reference_attention_time reference_pickup_time employ emergency_type accompanied]
         Person.all[1..-1].each do |p|
           csv << p.to_csv
         end
