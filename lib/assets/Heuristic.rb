@@ -99,6 +99,7 @@ module Heuristic
 
   def self.generate_262 date=Date.tomorrow
     csv = CSV.generate do |csv|
+      i=1
       csv << ['Paciente','Transporte','Descripcion Acompañante','UO que documenta','Fecha ejecución Transporte','Hora Ejecución Transporte','Descripción estado','Número Entrega','Apellido 1 estandarizado','Nombre de pila estandarizado','Desc. Sentido','Población','Calle Origen','Número Origen','Población','Calle Destino','Número Destino','Teléfono 1','Hora Entrega','Latitud','Longitud']
       PersonDate.where(date: date).where.not(person_id: 1).each do |pd|
         person = Person.find(pd.person_id)
@@ -107,10 +108,10 @@ module Heuristic
         end
         companion = person.accompanied ? 'Si':'No'
         uo = Medic.find(pd.medic_id).type.blank? ? 'MIGTCAPR':'MIGTTF'
-        csv << [person.bp,person.travels_type,companion,uo,date.strftime('%d-%m-%Y'),pd.time.to_time.strftime('%I:%M%p'),'Solicitado','',person.first_name,person.name,]
+        csv << [person.bp,person.travels_type,companion,uo,date.strftime('%d-%m-%Y'),pd.time.to_time.strftime('%I:%M%p'),'Solicitado',i,person.first_name,person.name,'Traer',person.town,person.address,person.address_number,'SAN MIGUEL','Alcalde Pedro Alarcón',970,person.phone,'',person.latitude, person.longitude]
+        i+=1
       end
     end
-
+    csv
   end
-
-     end
+end

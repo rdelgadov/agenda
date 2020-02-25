@@ -103,8 +103,8 @@ class ApplicationController < ActionController::Base
   end
 
 def generate_262
-  csv_file = Heuristic.generate_262 params[:date]
-  send_data csv_file
+  csv_file = Heuristic.generate_262 params[:date].to_date
+  send_data csv_file, filename: '262.csv'
 end
 
 end

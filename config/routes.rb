@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'get_file', to: 'application#show_error_charging_date'
   get 'medics/:id/next_date_for_patients', to: 'person_dates#next_date_for_patients'
   get 'dump_db', to: 'application#dump_db'
+  get '262', to: 'application#generate_262'
 
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'
