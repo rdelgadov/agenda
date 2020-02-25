@@ -30,7 +30,8 @@ module Heuristic
       person = Person.find_by_bp(row["patient_id"])
       person.update_attribute(:reference_pickup_time, time) unless time.blank? if person
 
-  end
+    end
+    end
 
   def self.create_attention_capacity date=Date.tomorrow
     week = date.at_beginning_of_week
@@ -112,4 +113,4 @@ module Heuristic
 
   end
 
-end
+     end
