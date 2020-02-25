@@ -191,7 +191,9 @@
         medic_id: medic.val(),
         calendar: calendar,
         events: event,
+        <% if @person %>
         person_id: <%= @person.id %>,
+        <% end %>
         edit: true
       },
       success: function(data) {

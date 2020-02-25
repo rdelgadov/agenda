@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   def month_avalaible_dates
     render template: 'layouts/template_mini_calendar', locals:
         {medic: Medic.find(params[:medic_id]),
-         dates: Person.find(params[:person_id]).buckets.where(medic_id: params[:medic_id]).map(&:date),
+         dates: params.has_key?(:person_id) ? Person.find(params[:person_id]).buckets.where(medic_id: params[:medic_id]).map(&:date) : [],
          id: params['calendar'],
          events: params['events'],
          edit: params[:edit]
