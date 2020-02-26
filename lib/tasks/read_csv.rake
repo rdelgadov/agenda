@@ -77,5 +77,21 @@ namespace :read_csv do
       end
     end
   end
+  desc "Load 262"
+  task load_262: :environment do
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/262_febrero.csv")),{headers:true, col_sep:';'})
+    table.by_row do |row|
+      person = Person.find(row['Paciente'])
+      if person
+        person.update_attribute :rut, row['Nº documento'] if person.rut.blank?
+        person.update_attribute :travels_type, row['Transporte'] if person.travels_type.blank?
+        person.update_attribute :accompanied, row['Acompañante']==1 ? true : false
+        person.update_attribute :name, row['Nombre de pila estandarizado']
+        person.update_attribute :first_name, row['Apellido 1 estandarizado']
+        person.update_attribute :second_name, row['Apellido 2 estandarizado']
+        person.update_attribute :phone, row['Teléfono 1']
+      end
+    end
+  end
 end
 
