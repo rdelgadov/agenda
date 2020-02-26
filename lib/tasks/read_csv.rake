@@ -79,9 +79,9 @@ namespace :read_csv do
   end
   desc "Load 262"
   task load_262: :environment do
-    table = CSV.parse(File.read(Rails.root.join("lib/tasks/262_febrero.csv")),{headers:true, col_sep:';'})
-    table.by_row do |row|
-      person = Person.find(row['Paciente'])
+    table = CSV.parse(File.read(Rails.root.join("lib/tasks/262_febrero.csv")),{headers: true, col_sep: ';'})
+    table.by_row.each do |row|
+      person = Person.find_by_bp(row['Paciente'])
       if person
         person.update_attribute :rut, row['Nº documento'] if person.rut.blank?
         person.update_attribute :travels_type, row['Transporte'] if person.travels_type.blank?
