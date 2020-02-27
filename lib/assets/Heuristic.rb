@@ -85,7 +85,7 @@ module Heuristic
 
   def self.run_heuristic date = Date.tomorrow.tomorrow
     message = []
-    for d in date..Date.new(2020, 03, 10)
+    d = date
       create_attention_capacity d.to_date
       create_patients d.to_date
       cmd = "python3 #{Rails.root.join("lib/heuristic/main.py")} #{Rails.root.join("lib/heuristic/input")} #{d}"
@@ -104,7 +104,7 @@ module Heuristic
         end
       end
       message << [d, error]
-    end
+
     message
   end
 
