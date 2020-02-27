@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get 'medics/:id/next_date_for_patients', to: 'person_dates#next_date_for_patients'
   get 'dump_db', to: 'application#dump_db'
   get '262', to: 'application#generate_262'
+  get 'load_windwos_from_file', to: 'application#load_windwos_from_file'
+  get 'load_calendar_from_file', to: 'application#load_calendar_from_file'
 
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'

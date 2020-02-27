@@ -45,6 +45,11 @@ class ApplicationController < ActionController::Base
         }, layout: false
   end
 
+  def load_windwos_from_file
+    Heuristic.load_pickuptime
+    redirect_to person_dates_path
+  end
+
   def load_calendar_from_file
     Heuristic.load_calendar
     redirect_to person_dates_path
