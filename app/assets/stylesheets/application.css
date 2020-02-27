@@ -83,6 +83,9 @@
 .mini_calendar.fc button{
     font-size: 0.7em;
 }
+.mini_calendar .fc-highlight{
+    background-color: #fadf9b;
+}
 
 #table_new_person{
     text-align: center;

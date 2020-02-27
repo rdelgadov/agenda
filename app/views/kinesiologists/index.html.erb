@@ -1,11 +1,12 @@
 <h1>Listado de Kinesiologos</h1>
 
-<table class="table">
+<table class="table table-hover">
   <tr>
     <th>Nombre</th>
     <th>Rut</th>
     <th>Telefono</th>
     <th>Agenda</th>
+    <th></th>
     <th></th>
     <th></th>
   </tr>
@@ -15,9 +16,10 @@
       <td><%= kine.name %></td>
       <td><%= kine.rut %></td>
       <td><%= kine.phone %></td>
-      <td><%= link_to 'Ver Agenda', kinesiologist_calendar_path(kine) %></td>
-      <td><%= link_to 'Ver', kinesiologist_path(kine) %></td>
-      <td><%= link_to 'Editar', edit_kinesiologist_path(kine) %></td>
+      <td><%= link_to 'Ver Agenda', kinesiologist_calendar_path(kine),class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Siguientes citas', medic_next_dates_path(kine) , class: 'btn btn-primary'%></td>
+      <td><%= link_to 'Ver', kinesiologist_path(kine), class: 'btn btn-primary' %></td>
+      <td><%= link_to 'Editar', edit_kinesiologist_path(kine), class: 'btn btn-primary' %></td>
     </tr>
   <% end %>
 </table>

@@ -36,6 +36,12 @@ class MedicsController < ApplicationController
     end
   end
 
+  def next_dates
+    medic = Medic.find(params[:id])
+    @dates = medic.next_dates_for_my_patients
+    render 'person_dates/index',layout: false
+  end
+
   private
   def permit_params
     params.require(:medic).permit(:name, :rut, :phone, :color, attention: {})

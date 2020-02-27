@@ -22,7 +22,7 @@ class Medic < ApplicationRecord
                 dates << pd.next_date(date+1.day)
             end
         end
-        dates.sort_by{|d| [d.date, d.time.to_time]}
+        dates.uniq.sort_by{|d| [d.date, d.time.to_time]}
     end
 
     def create_dates date=Date.today
