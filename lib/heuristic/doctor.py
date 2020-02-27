@@ -148,15 +148,15 @@ class AttentionOrder:
             
         return time_deviation
 
-def schedule_attention_orders(doctors_dict, att_orders_dict):
+def schedule_attention_orders(doctors_dict, att_orders):
     """
     Agenda las ordenes de atencion utilizando las citas disponibles de los doctores.
 
     Inputs:
     -- doctors_dict: diccionario de objetos de la clase Doctor, {id: doctor}
-    -- att_orders_dict: diccionario de objetos de la clase AttentionOrder, {id: att_order}
+    -- att_orders: lista de objetos de la clase AttentionOrder
 
-    Nota: en una version posterior, "att_orders_dict" sera un diccionario de la forma
+    Nota: en una version posterior, "att_orders" sera un diccionario de la forma
     {id: [att_order1, att_order2, ...]}, donde cada lista contendra las ordenes de un
     mismo paciente, y por lo tanto, los agendamientos no deben solaparse e idealmente
     no quedar muy espaciados.
@@ -167,13 +167,13 @@ def schedule_attention_orders(doctors_dict, att_orders_dict):
         available_appointments = [appt for appt in doc.agenda if appt.available]
 
         # ordenes de atencion pendientes con el doctor
-        pending_orders = [att_order for att_order in att_orders_dict.values() if att_order.required_doctor_id == doc.id]
+        pending_orders = [att_ord for att_ord in att_orders if att_ord.required_doctor_id == doc.id]
         
         # matriz de costos de asignacion
         deviations_matrix = np.empty((len(pending_orders),len(available_appointments)))
         
-        for i, att_order in enumerate(pending_orders):
-            deviations_matrix[i, :] = att_order.rate_appointments(available_appointments)
+        for i, att_ord in enumerate(pending_orders):
+            deviations_matrix[i, :] = att_ord.rate_appointments(available_appointments)
 
         # asignacion de citas a ordenes pendientes
         row_ind, col_ind = linear_sum_assignment(deviations_matrix)

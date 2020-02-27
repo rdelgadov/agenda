@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     else
       flash[:info] = 'La Ejecucion de la heuristica fue correcta.'
     end
-    redirect_to person_dates_path
+    send_data output_err, filename: 'resultado.txt' and return
   end
 
   def dump_db
@@ -110,13 +110,11 @@ class ApplicationController < ActionController::Base
       end
       send_data buckets, filename: 'sacos.csv'
     end
-
-
   end
 
   def generate_262
-  csv_file = Heuristic.generate_262 params[:date].to_date
-  send_data csv_file, filename: '262.csv'
-end
+    csv_file = Heuristic.generate_262 params[:date].to_date
+    send_data csv_file, filename: '262.csv'
+  end
 
 end

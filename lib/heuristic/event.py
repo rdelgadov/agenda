@@ -297,25 +297,25 @@ class SchedulePendingPatients(Event):
         self.center.vprint("Agendando pacientes sin transporte...")
 
         # ordenes de atencion que no tienen cita agendada aun
-        pending_attorders = {}
+        pending_attorders = []
 
         for patient in (self.center.pickup_wait + self.center.pickup_pending + self.center.schedule_wait):
             
-            first_att_order = patient.attention_orders[0]
+            for att_order in patient.attention_orders:
 
-            if first_att_order.appointment is None:
-                pending_attorders[patient.id] = first_att_order
-            
-            elif patient in self.center.schedule_wait:
-                self.center.schedule_wait.remove(patient)
-                self.center.completed.append(patient)
+                if att_order.appointment is None:
+                    pending_attorders.append(att_order)
+                
+                elif patient in self.center.schedule_wait:
+                    self.center.schedule_wait.remove(patient)
+                    self.center.completed.append(patient)
 
         schedule_attention_orders(self.center.doctors, pending_attorders)
 
         n_attorders = len(pending_attorders)
         n_scheduled = 0
 
-        for att_order in pending_attorders.values():
+        for att_order in pending_attorders:
 
             if att_order.appointment is not None:
                 n_scheduled += 1
