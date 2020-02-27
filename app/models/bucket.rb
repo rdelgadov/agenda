@@ -30,4 +30,8 @@ class Bucket < ApplicationRecord
     less_capacity
     add_person person_id
   end
+
+  def to_csv person
+    [self.date,person.bp, self.medic_id]
+  end
 end

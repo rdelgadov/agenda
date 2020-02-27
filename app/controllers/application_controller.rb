@@ -82,27 +82,39 @@ class ApplicationController < ActionController::Base
       send_data patients, filename: 'patients.csv'
 
     elsif params.has_key? :dates
-    dates = CSV.generate do |csv|
-      csv << %w[medic_id person_bp date time]
-      PersonDate.where.not(person_id: 1).each do |pd|
-        csv << pd.to_csv
+      dates = CSV.generate do |csv|
+        csv << %w[medic_id person_bp date time]
+        PersonDate.where.not(person_id: 1).each do |pd|
+          csv << pd.to_csv
+        end
       end
-      end
-    send_data dates, filename: 'dates.csv'
+      send_data dates, filename: 'dates.csv'
 
     elsif params.has_key? :medics
-    medics = CSV.generate do |csv|
-      csv << %w[medic_id name type]
-      Medic.all.each do |m|
-        csv << m.to_csv
+      medics = CSV.generate do |csv|
+        csv << %w[medic_id name type]
+        Medic.all.each do |m|
+          csv << m.to_csv
+        end
       end
-    end
-    send_data medics, filename: 'medics.csv'
+      send_data medics, filename: 'medics.csv'
 
+    elsif params.has_key? :sacos
+      buckets = CSV.generate do |csv|
+        csv << %w[date person_bp medic_id]
+        Bucket.all.each do |b|
+          b.people.each do |p|
+            csv << b.to_csv(p)
+          end
+        end
+      end
+      send_data buckets, filename: 'sacos.csv'
     end
+
+
   end
 
-def generate_262
+  def generate_262
   csv_file = Heuristic.generate_262 params[:date].to_date
   send_data csv_file, filename: '262.csv'
 end
