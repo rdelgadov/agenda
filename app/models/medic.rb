@@ -15,6 +15,14 @@ class Medic < ApplicationRecord
         available
     end
 
+    def patients_for_today
+        dates = []
+        PersonDate.where(medic_id: id, date: Date.today).where.not(person_id: 1).sort_by{|d| d.time.to_time}.each do |pd|
+            dates << [pd,pd.next_date]
+        end
+        dates
+    end
+
     def next_dates_for_my_patients date=Date.today
         dates = []
         PersonDate.where(medic_id: id, date: date).where.not(person_id: 1).each do |pd|

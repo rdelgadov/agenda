@@ -57,29 +57,33 @@ module Heuristic
     attributes = %w[ident date attention_type transportation_type lat lon companion pickup_time attention_time doctor_id vehicle_type medical_rest required_attention_time reference_attention_time reference_pickup_time CREADO_EL]
     CSV.open(Rails.root.join("lib/heuristic/input/patients.csv"), 'wb', headers: true) do |csv|
       csv << attributes
+      Bucket.where(date: date).each do |b|
+        b.people.each do |person|
+          tp = person.transportation? ? 'pick_up-and-delivery' : 'no-transportation'
+          vt = ''
+          vt = '5632'
+          reference_attention = person.reference_attention_time
+          required_attention = ''
+          pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id, date: date).last
+          if pd
+            required_attention = pd.time if pd.is_next?
+          end
+          medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
+          csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
+
+          end
+        end
       Person.all.each do |person|
-        tp = person.transportation ? 'pick_up-and-delivery' : 'no-transportation'
-        vt = ''
-        vt = '5632'
         b = person.buckets.where(date: date).first
         if b.blank?
           next
         end
-        reference_attention = person.reference_attention_time
-        pd = PersonDate.where(person_id: person.id, medic_id: b.medic_id).where(date: date - 7.day..date).last
-        if pd.blank?
-          required_attention = ''
-        else
-          required_attention = pd.time if pd.is_next? and date == pd.date
-        end
-        medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
-        csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
 
       end
     end
   end
 
-  def self.run_heuristic date = Date.tomorrow
+  def self.run_heuristic date = Date.tomorrow.tomorrow
     message = []
     for d in date..Date.new(2020, 03, 10)
       create_attention_capacity d.to_date
@@ -110,7 +114,7 @@ module Heuristic
       csv << ['Paciente', 'Transporte', 'Descripcion Acompañante', 'UO que documenta', 'Fecha ejecución Transporte', 'Hora Ejecución Transporte', 'Descripción estado', 'Número Entrega', 'Apellido 1 estandarizado', 'Nombre de pila estandarizado', 'Desc. Sentido', 'Sentido', 'Población', 'Calle Origen', 'Número Origen', 'Población', 'Calle Destino', 'Número Destino', 'Teléfono 1', 'Hora Entrega', 'Latitud', 'Longitud']
       PersonDate.where(date: date).where.not(person_id: 1).each do |pd|
         person = Person.find(pd.person_id)
-        unless person.transportation
+        unless person.transportation?
           next
         end
         companion = person.accompanied ? 'Si' : 'No'

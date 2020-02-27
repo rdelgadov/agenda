@@ -27,6 +27,10 @@ class Person < ApplicationRecord
 
   end
 
+  def transportation?
+    self.transportation and ([101,112,103].include? self.travels_type)
+  end
+
   def to_csv
     [self.id, self.bp,self.name,self.first_name,self.second_name,self.phone,self.rest,self.transportation,self.latitude,self.longitude,self.vehicle_type,self.town,self.address, self.address_number,self.travels_type,self.medic,self.kine,self.comment,self.reference_attention_time, self.reference_pickup_time,self.employ,self.emergency_type, self.accompanied]
   end

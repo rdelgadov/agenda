@@ -38,7 +38,7 @@ class MedicsController < ApplicationController
 
   def next_dates
     medic = Medic.find(params[:id])
-    @dates = medic.next_dates_for_my_patients
+    @dates = medic.patients_for_today
     render 'person_dates/index',layout: false
   end
 
