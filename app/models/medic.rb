@@ -9,7 +9,7 @@ class Medic < ApplicationRecord
 
     def month_available_dates date=Date.tomorrow
         available=[]
-        Array(date..date.end_of_month+1.month).each do |d|
+        Array(date..date.end_of_month+3.month).each do |d|
             available << d if Bucket.where(medic_id: id, date: d).where("capacity > 0").count > 0
         end
         available

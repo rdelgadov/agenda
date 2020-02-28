@@ -67,13 +67,13 @@ class ApplicationController < ActionController::Base
 
   def run_heuristic
     date = params[:date].blank? ? Date.tomorrow : params[:date].to_date
-    output_err = (Heuristic.delay.run_heuristic date)
+    output_err = (ApplicationJob.delay.run_heuristic date)
     if !output_err.blank?
       flash[:danger] = "La Ejecucion de la heuristica tuvo los problemas: #{output_err}"
     else
       flash[:info] = 'La Ejecucion de la heuristica fue correcta.'
     end
-    send_data output_err, filename: 'resultado.txt' and return
+    redirect_to person_dates_path
   end
 
   def dump_db

@@ -1,5 +1,5 @@
 require 'open3'
-module Heuristic
+class Heuristic
   def self.load_calendar
     table = CSV.parse(File.read(Rails.root.join("lib/heuristic/input/output.csv")), {headers: true, col_sep: ','})
     table.by_row!.each do |row|
