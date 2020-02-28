@@ -45,6 +45,10 @@ class ApplicationController < ActionController::Base
         }, layout: false
   end
 
+  def get_result_of_heuristic
+    send_file Rails.root.join("lib/heuristic/resultado.txt"), filename: 'resultado.txt'
+  end
+
   def load_windwos_from_file
     Heuristic.load_pickuptime
     redirect_to person_dates_path
@@ -66,13 +70,10 @@ class ApplicationController < ActionController::Base
   end
 
   def run_heuristic
-    date = params[:date].blank? ? Date.tomorrow : params[:date].to_date
-    output_err = (ApplicationJob.delay.run_heuristic date)
-    if !output_err.blank?
-      flash[:danger] = "La Ejecucion de la heuristica tuvo los problemas: #{output_err}"
-    else
-      flash[:info] = 'La Ejecucion de la heuristica fue correcta.'
-    end
+    from = params[:from].blank? ? Date.tomorrow : params[:from].to_date
+    to = params[:to].blank? ? Date.new(2020,03,10) : params[:to].to_date
+    ApplicationJob.delay.run_heuristic(from, to)
+    flash[:info] = 'La Heuristica se esta ejecutando.'
     redirect_to person_dates_path
   end
 

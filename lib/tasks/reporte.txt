@@ -1,0 +1,11 @@
+No se pudo cargar al paciente 1005710088 fecha 2020-02-20 a la hora 16:15 con el profesional 1 linea 4
+No se pudo cargar al paciente 1003059262 fecha 2020-02-20 a la hora 8:00 con el profesional 2 linea 15
+No se pudo cargar al paciente 1005356141 fecha 2020-02-20 a la hora 13:00 con el profesional 2 linea 23
+No se pudo cargar al paciente 1006593452 fecha 2020-02-20 a la hora 8:45 con el profesional 2 linea 33
+No se pudo cargar al paciente 1003975602 fecha 2020-02-20 a la hora 11:45 con el profesional 2 linea 37
+No se pudo cargar al paciente 1005050019 fecha 2020-02-20 a la hora 9:30 con el profesional 2 linea 42
+No se pudo cargar al paciente 1002435591 fecha 2020-02-20 a la hora 15:15 con el profesional 2 linea 43
+No se pudo cargar al paciente 1006614669 fecha 2020-02-20 a la hora 12:00 con el profesional 2 linea 52
+No se pudo cargar al paciente 1001052286 fecha 2020-02-20 a la hora 9:45 con el profesional 3 linea 70
+No se pudo cargar al paciente 1004609081 fecha 2020-02-20 a la hora 16:45 con el profesional 4 linea 76
+No se pudo cargar al paciente 1001790948 fecha 2020-02-20 a la hora 11:00 con el profesional 1 linea 78

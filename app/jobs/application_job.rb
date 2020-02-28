@@ -82,9 +82,9 @@ class ApplicationJob < ActiveJob::Base
     end
   end
 
-  def self.run_heuristic date = Date.tomorrow.tomorrow
+  def self.run_heuristic from = Date.tomorrow.tomorrow, to = Date.new(2020,03,10)
     message = []
-    d = date
+    for d in from..to
       create_attention_capacity d.to_date
       create_patients d.to_date
       cmd = "python3 #{Rails.root.join("lib/heuristic/main.py")} #{Rails.root.join("lib/heuristic/input")} #{d}"
@@ -103,8 +103,10 @@ class ApplicationJob < ActiveJob::Base
         end
       end
       message << [d, error]
-
-    message
+    end
+    f = File.open(Rails.root.join("lib/heuristic/resultado.txt"),'w')
+    f.puts message
+    f.close
   end
 
   def self.generate_262 date = Date.tomorrow

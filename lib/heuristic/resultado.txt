@@ -1,0 +1,15 @@
+2020-03-03
+
+2020-03-04
+Traceback (most recent call last):
+  File "/home/rodrigo/Documents/ACHS/achs/lib/heuristic/main.py", line 55, in <module>
+    c.simulate_events()
+  File "/home/rodrigo/Documents/ACHS/achs/lib/heuristic/center.py", line 124, in simulate_events
+    next_event.execute() # ejecutar evento
+  File "/home/rodrigo/Documents/ACHS/achs/lib/heuristic/event.py", line 222, in execute
+    self.center.lat, self.center.lon, self.center.id, self.time)
+  File "/home/rodrigo/Documents/ACHS/achs/lib/heuristic/vehicle.py", line 195, in route_vehicles
+    if solution["num_vehicles_used"] == 0:
+KeyError: 'num_vehicles_used'
+2020-03-05
+

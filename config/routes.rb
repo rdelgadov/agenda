@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get '262', to: 'application#generate_262'
   get 'load_windwos_from_file', to: 'application#load_windwos_from_file'
   get 'load_calendar_from_file', to: 'application#load_calendar_from_file'
+  get 'file_heuristic', to: 'application#get_result_of_heuristic'
 
   resources :persons, :medics, :kinesiologists ,:person_dates
   root 'application#index'
