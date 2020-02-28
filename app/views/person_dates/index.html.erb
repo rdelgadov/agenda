@@ -17,22 +17,34 @@
 }
 </style>
 <div class="print">
-<h1>Listado de proximas citas</h1>
+<h1>Listado de citas de hoy</h1>
 
 <table class="table">
   <tr>
-    <th>Dia</th>
     <th>Hora</th>
     <th>Persona</th>
-    <th>Medico</th>
+    <th>Medico prox cita</th>
+    <th>Dia prox cita</th>
+    <th>Hora prox cita</th>
+    <th>Reposo?</th>
+    <th>Transporte?</th>
   </tr>
 
   <% @dates.each do |date,ndate| %>
     <tr>
-      <td><%= date.date %></td>
       <td><%= date.time %></td>
-      <td><%= link_to date.person.name + '' +date.person.first_name , person_path(date.person)  %></td>
-      <td><%= link_to date.medic.name , medic_path(date.medic)  %></td>
+      <td><%= link_to "#{date.person.name} #{date.person.first_name}" , person_path(date.person)  %></td>
+      <% unless ndate.blank? %>
+        <td><%= link_to ndate.medic.name , medic_path(ndate.medic)  %></td>
+        <td><%= ndate.date %></td>
+        <td><%= ndate.time %></td>
+        <% else %>
+      <td></td>
+        <td></td>
+        <td></td>
+      <% end %>
+      <td><%= date.person.rest ? 'Si':'No'%></td>
+      <td><%= date.person.transportation ? 'Si':'No' %></td>
     </tr>
   <% end %>
 </table>

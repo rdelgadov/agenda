@@ -60,7 +60,6 @@ module Heuristic
       Bucket.where(date: date).each do |b|
         b.people.each do |person|
           tp = person.transportation? ? 'pick_up-and-delivery' : 'no-transportation'
-          vt = ''
           vt = '5632'
           reference_attention = person.reference_attention_time
           required_attention = ''

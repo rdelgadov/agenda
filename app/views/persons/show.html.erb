@@ -72,13 +72,13 @@
      <div class='col'>
        <strong>Fechas proximas citas Terapia Fisica</strong>
        <br>
-       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine), dates:@person.dates, id:'mini_calendar1',events: 'eventtf', edit: false}%>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Kinesiologist.find(@person.kine), dates:@person.buckets.where(medic_id:@person.kine).map(&:date), id:'mini_calendar1',events: 'eventtf', edit: false}%>
        <br>
      </div>
     <div class='col'>
        <strong>Fechas proximas citas Atencion Primaria</strong>
        <br>
-       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.ap_dates, id:'mini_calendar2',events: 'eventap', edit: false}%>
+       <%= render template:'layouts/template_mini_calendar', locals:{medic: Medic.find(@person.medic), dates:@person.buckets.where(medic_id:@person.medic).map(&:date), id:'mini_calendar2',events: 'eventap', edit: false}%>
        <br>
     </div>
     <div class='col'></div>
