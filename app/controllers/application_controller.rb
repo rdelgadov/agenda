@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
 
   def run_heuristic
     date = params[:date].blank? ? Date.tomorrow : params[:date].to_date
-    output_err = (Heuristic.run_heuristic date)
+    output_err = (Heuristic.delay.run_heuristic date)
     if !output_err.blank?
       flash[:danger] = "La Ejecucion de la heuristica tuvo los problemas: #{output_err}"
     else

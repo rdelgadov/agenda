@@ -124,5 +124,4 @@ module Heuristic
     end
     csv
   end
-  handle_asynchronously :run_heuristic
 end
