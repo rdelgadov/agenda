@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_result_of_heuristic
-    send_file Rails.root.join("lib/heuristic/resultado.txt"), filename: 'resultado.txt'
+    send_data Result.last.description, filename: 'resultados.txt'
   end
 
   def load_windwos_from_file

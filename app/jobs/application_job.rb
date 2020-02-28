@@ -104,9 +104,7 @@ class ApplicationJob < ActiveJob::Base
       end
       message << [d, error]
     end
-    f = File.open(Rails.root.join("lib/heuristic/resultado.txt"),'w')
-    f.puts message
-    f.close
+    Result.create({description: message})
   end
 
   def self.generate_262 date = Date.tomorrow
