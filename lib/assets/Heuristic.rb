@@ -110,15 +110,16 @@ class Heuristic
   def self.generate_262 date = Date.tomorrow
     csv = CSV.generate do |csv|
       i = 1
-      csv << ['Paciente', 'Transporte', 'Descripcion Acompañante', 'UO que documenta', 'Fecha ejecución Transporte', 'Hora Ejecución Transporte', 'Descripción estado', 'Número Entrega', 'Apellido 1 estandarizado', 'Nombre de pila estandarizado', 'Desc. Sentido', 'Sentido', 'Población', 'Calle Origen', 'Número Origen', 'Población', 'Calle Destino', 'Número Destino', 'Teléfono 1', 'Hora Entrega', 'Latitud', 'Longitud']
+      csv << ['Paciente', 'Transporte', 'Acompañante','Descripcion Acompañante', 'UO que documenta', 'Fecha ejecución Transporte', 'Hora Ejecución Transporte', 'Descripción estado', 'Número Entrega', 'Apellido 1 estandarizado', 'Nombre de pila estandarizado', 'Desc. Sentido', 'Sentido', 'Población', 'Calle Origen', 'Número Origen', 'Población', 'Calle Destino', 'Número Destino', 'Teléfono 1', 'Hora Entrega', 'Latitud', 'Longitud']
       PersonDate.where(date: date).where.not(person_id: 1).each do |pd|
         person = Person.find(pd.person_id)
         unless person.transportation?
           next
         end
         companion = person.accompanied ? 'Si' : 'No'
+        n_companion = person.accompanied ? 1 : 2
         uo = Medic.find(pd.medic_id).type.blank? ? 'MIGTCAPR' : 'MIGTTF'
-        csv << [person.bp, person.travels_type, companion, uo, date.strftime('%d-%m-%Y'), pd.time.to_time.strftime('%I:%M%p'), 'Generado', i, person.first_name, person.name, 'Traer', 2, person.town, person.address, person.address_number, 'SAN MIGUEL', 'Alcalde Pedro Alarcón', 970, person.phone, pd.time.to_time.strftime('%I:%M%p'), person.latitude, person.longitude]
+        csv << [person.bp, person.travels_type, n_companion, companion, uo, date.strftime('%d-%m-%Y'), pd.time.to_time.strftime('%H:%M:%S'), 'Generado', '', person.first_name, person.name, 'Traer', 2, person.town, person.address, person.address_number, 'SAN MIGUEL', 'Alcalde Pedro Alarcón', 970, person.phone, pd.time.to_time.strftime('%H:%M:%S'), person.latitude, person.longitude]
         i += 1
       end
     end
