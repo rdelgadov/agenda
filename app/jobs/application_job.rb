@@ -6,17 +6,16 @@ class ApplicationJob < ActiveJob::Base
       time = row["t_start"]
       time = row["t_start"][1..-1] if row['t_start'][0] == '0'
       person = Person.find_by_bp(row["patient_id"])
-      unless person
-        person = Person.new(bp: row["patient_id"], rut: row["patient_id"])
-        person.save!
-      end
-      pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: time).first
-      if !pd
-        print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
-      else
-        pd.update_attribute(:person_id, person.id)
-        if person.reference_attention_time.blank?
-          person.update_attribute(:reference_attention_time, time)
+      if person
+        PersonDate.where(date:row["date"],person_id: person.id,medic_id: row["doctor_id"]).each(&:untake)
+        pd = PersonDate.where(medic_id: row["doctor_id"], date: row["date"].to_date, time: time).first
+        if !pd
+          print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
+        else
+          pd.update_attribute(:person_id, person.id)
+          if person.reference_attention_time.blank?
+            person.update_attribute(:reference_attention_time, time)
+          end
         end
       end
     end
@@ -70,8 +69,8 @@ class ApplicationJob < ActiveJob::Base
           medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
           csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
 
-          end
         end
+      end
       Person.all.each do |person|
         b = person.buckets.where(date: date).first
         if b.blank?
@@ -82,7 +81,7 @@ class ApplicationJob < ActiveJob::Base
     end
   end
 
-  def self.run_heuristic from = Date.tomorrow.tomorrow, to = Date.new(2020,03,10)
+  def self.run_heuristic from = Date.tomorrow.tomorrow, to = Date.new(2020, 03, 10)
     message = []
     for d in from..to
       create_attention_capacity d.to_date
