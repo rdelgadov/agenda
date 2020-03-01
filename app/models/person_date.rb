@@ -23,19 +23,23 @@ class PersonDate < ApplicationRecord
     self.id == self.next_date.id
   end
 
+  def take person_id
+    b = Bucket.where(medic_id: medic_id, date: date).first
+    b.take person_id
+    update_attribute(:person_id, person_id)
+  end
+
   def self.take params
     pd = self.where(medic_id: params[:medic_id], date: params[:date], time: params[:time], person_id: 1).first
-    if pd
-      b = Bucket.where(medic_id: params[:medic_id], date:params[:date]).first
-      b.take params[:person_id]
-      pd.update_attribute(:person_id, params[:person_id])
-    end
+    pd.take params[:person_id] if pd
   end
 
   def untake
     b = Bucket.where(medic_id: medic_id, date: date).first
     if b
-      b.untake person_id
+      if PersonDate.where(medic_id: medic_id, date: date, person_id: person_id).count == 1
+        b.untake person_id
+      end
     end
     update_attribute :person_id, 1
   end
