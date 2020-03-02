@@ -128,10 +128,3 @@ class ApplicationJob < ActiveJob::Base
     csv
   end
 end
-
-c = PersonDate.where('date>?','2020-03-01').where.not(person_id: 1).group(:id,:date).order(date: :asc).select do |pd|
-  Bucket.where(date: pd.date, medic_id:pd.medic_id).first.people.map(&:id).exclude? pd.person_id
-end
-c.each do |pc|
-  pd.take pd.person_id
-end
