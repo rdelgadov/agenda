@@ -24,7 +24,10 @@ class Person < ApplicationRecord
         b.untake(self.id) if taked_buckets.exclude? b.id
       end
     end
+  end
 
+  def has_date_tomorrow? medic_id
+    PersonDate.where(person_id: id,date: Date.tomorrow, medic_id: medic_id)
   end
 
   def transportation?

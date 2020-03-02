@@ -1,6 +1,7 @@
 require 'open3'
 class ApplicationJob < ActiveJob::Base
   def self.load_calendar
+    pickup = []
     table = CSV.parse(File.read(Rails.root.join("lib/heuristic/input/output.csv")), {headers: true, col_sep: ','})
     table.by_row!.each do |row|
       time = row["t_start"]
@@ -12,13 +13,15 @@ class ApplicationJob < ActiveJob::Base
         if !pd
           print("La cita para el dia #{row['date']} y la hora #{time} con el doctor #{row["doctor_id"]} no existe.")
         else
-          pd.update_attribute(:person_id, person.id)
-          if person.reference_attention_time.blank?
+          pd.take person.id
+          if person.has_date_tomorrow?(row['doctor_id']) and person.reference_attention_time.blank?
             person.update_attribute(:reference_attention_time, time)
+            pickup << person.bp
           end
         end
       end
     end
+    pickup
   end
 
   def self.load_pickuptime
@@ -84,6 +87,7 @@ class ApplicationJob < ActiveJob::Base
   def self.run_heuristic from = Date.tomorrow.tomorrow, to = Date.new(2020, 03, 10)
     message = []
     for d in from..to
+      next if d.wday==6 or d.wday==0
       create_attention_capacity d.to_date
       create_patients d.to_date
       cmd = "python3 #{Rails.root.join("lib/heuristic/main.py")} #{Rails.root.join("lib/heuristic/input")} #{d}"
@@ -123,4 +127,11 @@ class ApplicationJob < ActiveJob::Base
     end
     csv
   end
+end
+
+c = PersonDate.where('date>?','2020-03-01').where.not(person_id: 1).group(:id,:date).order(date: :asc).select do |pd|
+  Bucket.where(date: pd.date, medic_id:pd.medic_id).first.people.map(&:id).exclude? pd.person_id
+end
+c.each do |pc|
+  pd.take pd.person_id
 end
