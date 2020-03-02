@@ -20,7 +20,7 @@ class PersonDate < ApplicationRecord
   end
 
   def is_next?
-    self.id == self.next_date
+    self == self.next_date
   end
 
   def take person_id
