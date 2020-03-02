@@ -110,14 +110,29 @@ class Heuristic
   def self.generate_262 date = Date.tomorrow
     csv = CSV.generate do |csv|
       i = 1
+      duplicated = []
+      kine_map = Kinesiologist.all.map(&:id)
       csv << ['Paciente', 'Transporte', 'Acompañante','Descripcion Acompañante', 'UO que documenta', 'Fecha ejecución Transporte', 'Hora Ejecución Transporte', 'Descripción estado', 'Número Entrega', 'Apellido 1 estandarizado', 'Nombre de pila estandarizado', 'Desc. Sentido', 'Sentido', 'Población', 'Calle Origen', 'Número Origen', 'Población', 'Calle Destino', 'Número Destino', 'Teléfono 1', 'Hora Entrega', 'Latitud', 'Longitud']
       PersonDate.where(date: date).where.not(person_id: 1).each do |pd|
+        if duplicated.include? pd.person_id
+          next
+        end
+
         person = Person.find(pd.person_id)
+        PersonDate.where(date: date, person_id: pd.person_id).where.not(id: pd.id).each do |d|
+          if kine_map.exclude? d.medic_id
+            pd = d
+          end
+          duplicated << pd.person_id
+
+        end
+
         unless person.transportation?
           next
         end
         companion = person.accompanied ? 'Si' : 'No'
         n_companion = person.accompanied ? 1 : 2
+
         uo = Medic.find(pd.medic_id).type.blank? ? 'MIGTCAPR' : 'MIGTTF'
         csv << [person.bp, person.travels_type, n_companion, companion, uo, date.strftime('%d-%m-%Y'), pd.time.to_time.strftime('%H:%M:%S'), 'Generado', '', person.first_name, person.name, 'Traer', 2, person.town, person.address, person.address_number, 'SAN MIGUEL', 'Alcalde Pedro Alarcón', 970, person.phone, pd.time.to_time.strftime('%H:%M:%S'), person.latitude, person.longitude]
         i += 1
