@@ -16,11 +16,11 @@ class PersonDate < ApplicationRecord
   end
 
   def next_date date=Date.tomorrow
-    PersonDate.where(person_id: person_id).where("date>=?",date).order(date: :asc).sort_by{|d| d.time.to_time}.first
+    PersonDate.where(person_id: person_id).where("date>=?",date).order(date: :asc).first
   end
 
   def is_next?
-    self.id == self.next_date.id
+    self.id == self.next_date
   end
 
   def take person_id
