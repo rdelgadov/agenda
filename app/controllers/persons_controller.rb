@@ -59,6 +59,9 @@ class PersonsController < ApplicationController
   def update
     @person = Person.find(params[:id])
     if @person.update_attributes(person_params)
+      @person.update_attribute :transportation, false if person_params[:transportation].blank?
+      @person.update_attribute :rest, false if person_params[:rest].blank?
+      @person.update_attribute :accompanied, false if person_params[:accompanied].blank?
       @person.take_buckets person_params
       @person.save!
       redirect_to @person
