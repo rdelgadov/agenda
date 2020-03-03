@@ -312,7 +312,7 @@ class SchedulePendingPatients(Event):
         pending_attorders = []
 
         for patient in (self.center.pickup_wait + self.center.pickup_pending + self.center.schedule_wait):
-            if self.restless_only and patient.repose:
+            if self.restless_only and (patient.repose or patient.transport):
                 continue
             
             for att_order in patient.attention_orders:
