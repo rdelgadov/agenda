@@ -60,13 +60,11 @@ class ApplicationController < ActionController::Base
   end
 
   def create_attention_capacity
-    Heuristic.create_attention_capacity params[:date].to_date
-    redirect_to person_dates_path
+    send_data Heuristic.create_attention_capacity(params[:date].to_date), filename: 'attention_capacity.csv'
   end
 
   def create_patients
-    Heuristic.create_patients params[:date].to_date
-    redirect_to person_dates_path
+    send_data Heuristic.create_patients(params[:date].to_date), filename: 'patientes.csv'
   end
 
   def run_heuristic

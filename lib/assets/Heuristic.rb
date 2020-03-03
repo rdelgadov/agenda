@@ -39,7 +39,7 @@ class Heuristic
   def self.create_attention_capacity date = Date.tomorrow
     week = date.at_beginning_of_week
     attributes = %w[ident attention_type date t_start	capacity]
-    CSV.open(Rails.root.join("lib/heuristic/input/attention_capacity.csv"), 'wb', headers: true) do |csv|
+    CSV.generate(headers: true) do |csv|
       csv << attributes
       Medic.all.each do |medic|
         attention = "Primaria"
@@ -55,7 +55,7 @@ class Heuristic
 
   def self.create_patients date = Date.tomorrow
     attributes = %w[ident date attention_type transportation_type lat lon companion pickup_time attention_time doctor_id vehicle_type medical_rest required_attention_time reference_attention_time reference_pickup_time CREADO_EL]
-    CSV.open(Rails.root.join("lib/heuristic/input/patients.csv"), 'wb', headers: true) do |csv|
+    CSV.generate(headers: true) do |csv|
       csv << attributes
       Bucket.where(date: date).each do |b|
         b.people.each do |person|
@@ -69,16 +69,8 @@ class Heuristic
           end
           medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
           csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
-
           end
         end
-      Person.all.each do |person|
-        b = person.buckets.where(date: date).first
-        if b.blank?
-          next
-        end
-
-      end
     end
   end
 
