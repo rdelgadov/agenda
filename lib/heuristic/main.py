@@ -45,6 +45,8 @@ if __name__ == "__main__":
                     count+=1
 
         print(f"{doc}: se demandan {count} de {len(doc.agenda)} citas")
+        if count > len(doc.agenda):
+            raise Exception(f"La demanda excede la capacidad de atencion de {doc}")
             
     # se crea y simula el sistema
     c = Center("SanMiguel", -33.487056, -70.647836, verbose=verbose)
@@ -73,12 +75,16 @@ if __name__ == "__main__":
         dict_stats["date"] = date
         patients_stats.append(dict_stats)
 
-        if pat.transport:
+        if pat.transport and pat.pickup_order.trip is not None:
             pickup_time = bf.int2strtime(pat.pickup_order.trip.start_time)
         else:
             pickup_time = None
 
-        attention_time = bf.int2strtime(pat.attention_time)
+        if pat.attention_time is not None:
+            attention_time = bf.int2strtime(pat.attention_time)
+        else:
+            attention_time = None
+
         windows_stats.append((pat.id, attention_time, pickup_time))
 
     for doc in c.doctors.values():

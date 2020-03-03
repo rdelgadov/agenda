@@ -62,8 +62,7 @@ class Appointment:
 
 class AttentionOrder:
     """Contiene las especificaciones de una solicitud de atencion."""
-    def __init__(self, attention_type, required_doctor_id,
-        window_start=START_TIME, window_end=END_TIME, medical_rest=True, required_time=None):
+    def __init__(self, attention_type, required_doctor_id, medical_rest=True, required_time=None, reference_time=None):
         
         if attention_type not in [PRIMARY_ATTENTION, SECONDARY_ATTENTION]:
             raise Exception(f'"{attention_type}" no es un tipo de atencion valido.')
@@ -72,10 +71,15 @@ class AttentionOrder:
         self.required_doctor_id = required_doctor_id
         self.required_time = required_time
         self.medical_rest = medical_rest
+        self.reference_time = reference_time
 
         # franja horaria ideal de atencion
-        self.window_start = window_start
-        self.window_end = window_end
+        if reference_time is None:
+            self.window_start = START_TIME
+            self.window_end = END_TIME
+        else:
+            self.window_start = max(START_TIME, reference_time - ATTENTION_WINDOW_DEVIATION)
+            self.window_end = min(END_TIME, reference_time + ATTENTION_WINDOW_DEVIATION)
         
         self.appointment = None
         self.fixed_appointment = False
@@ -140,12 +144,22 @@ class AttentionOrder:
         appointments_time = np.array([appt.start_time for appt in available_appointments])
 
         if self.medical_rest:
-            time_deviation = np.maximum(self.window_start - appointments_time, appointments_time - self.window_end)
-            time_deviation = np.maximum(time_deviation, 0)
+            if self.reference_time is None:
+                time_deviation = np.zeros_like(appointments_time)
+            else:
+                time_deviation = (appointments_time - self.reference_time)**2
 
+        # citas con indicacion de reposo se intencionan al comienzo o fin de la jornada
         else:
-            time_deviation = np.minimum((appointments_time - OPENING_TIME)**2, (appointments_time - CLOSING_TIME)**2)
-            
+            # si no hay hora de referencia, puede ser con respecto a cualquiera de los dos extremos del dia
+            if self.reference_time is None:
+                time_deviation = np.minimum((appointments_time - OPENING_TIME)**2, (appointments_time - CLOSING_TIME)**2)
+            # en caso contrario, con respecto al extremo mas cercano a la hora de referencia
+            else:
+                edge_condition = abs(self.reference_time - OPENING_TIME) <= abs(self.reference_time - CLOSING_TIME)
+                reference_edge = OPENING_TIME if edge_condition else CLOSING_TIME
+                time_deviation = (appointments_time - reference_edge)**2
+
         return time_deviation
 
 def schedule_attention_orders(doctors_dict, att_orders):

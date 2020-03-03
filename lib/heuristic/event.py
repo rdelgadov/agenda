@@ -140,6 +140,9 @@ class RouteVehicles(Event):
             transportation_orders = {}
 
             for pat in self.center.pickup_wait:
+
+                # orden de transporte del paciente
+                tpt_order = pat.pickup_order
                         
                 # primera orden de atencion del paciente
                 att_order = pat.attention_orders[0]
@@ -158,12 +161,17 @@ class RouteVehicles(Event):
                 suggested_window_start = max(START_TIME, next_appt.start_time - NEXT_APPT_BUFFER)
                 suggested_window_end = max(START_TIME, last_appt.start_time - LAST_APPT_BUFFER)
 
-                # orden de transporte del paciente
-                tpt_order = pat.pickup_order
+                # si ventana de tiempo original caduca, se redefine a partir de la hora actual; de lo contrario se conserva
+                if self.time > tpt_order._window_end:
+                    current_window_start = self.time
+                    current_window_end = self.time + TRANSPORTATION_WINDOW_DEVIATION
+                else:
+                    current_window_start = tpt_order._window_start
+                    current_window_end = tpt_order._window_end
 
-                # se calcula ventana como la interseccion entre la original y la sugerida
-                window_start = max(tpt_order._window_start, suggested_window_start)
-                window_end = min(tpt_order._window_end, suggested_window_end)
+                # ventana para ruteo es la interseccion entre la original (o redefinida) y la sugerida
+                window_start = max(current_window_start, suggested_window_start)
+                window_end = min(current_window_end, suggested_window_end)
 
                 # si interseccion es vacia, se usa la ventana sugerida
                 if window_start > window_end:
@@ -289,23 +297,30 @@ class SchedulePendingPatients(Event):
     """
     Se agendan los pacientes que estan pendientes (que no necesitan transporte o no pudieron ser transportados).
     """
-    def __init__(self, time, center):
+    def __init__(self, time, center, restless_only=False):
         super().__init__(time, center, rank=-1, description="SchedulePendingPatients")
+        self.restless_only = restless_only
 
     def execute(self):
 
-        self.center.vprint("Agendando pacientes sin transporte...")
+        if self.restless_only:
+            self.center.vprint("---> Agendando pacientes sin reposo...")
+        else:
+            self.center.vprint("---> Agendando pacientes pendientes...")
 
         # ordenes de atencion que no tienen cita agendada aun
         pending_attorders = []
 
         for patient in (self.center.pickup_wait + self.center.pickup_pending + self.center.schedule_wait):
+            if self.restless_only and patient.repose:
+                continue
             
             for att_order in patient.attention_orders:
 
                 if att_order.appointment is None:
                     pending_attorders.append(att_order)
                 
+                # si el paciente tiene una orden de atencion con cita ya fija
                 elif patient in self.center.schedule_wait:
                     self.center.schedule_wait.remove(patient)
                     self.center.completed.append(patient)
@@ -325,7 +340,7 @@ class SchedulePendingPatients(Event):
                     self.center.schedule_wait.remove(patient)
                     self.center.completed.append(patient)
 
-        self.center.vprint(f"Se agendan {n_scheduled} de {n_attorders} ordenes de atencion!\n")
+        self.center.vprint(f"---> Se agendan {n_scheduled} de {n_attorders} ordenes de atencion.\n")
 
 class RoutePendingPickups(Event):
     """
@@ -336,7 +351,7 @@ class RoutePendingPickups(Event):
         
     def execute(self):
 
-        self.center.vprint("Ruteando ordenes de pickup pendientes...")
+        self.center.vprint("---> Ruteando ordenes de pickup pendientes...")
 
         taxis_tocall = {}
         pending_orders = {}
@@ -344,7 +359,7 @@ class RoutePendingPickups(Event):
         for i, pat in enumerate(self.center.pickup_pending + self.center.pickup_wait):
 
             if pat.attention_time is None:
-                self.center.vprint(f"{pat} no se rutea, pues no posee hora de atencion.")
+                self.center.vprint(f"---> {pat} no se rutea, pues no posee hora de atencion.")
                 continue
 
             # se redefine la compania del paciente a 0 para no tener que definir
@@ -361,7 +376,7 @@ class RoutePendingPickups(Event):
             self.center.taxis[id_taxi] = taxi
 
         if len(pending_orders) == 0:
-            self.center.vprint("No hay ordenes pendientes.\n")
+            self.center.vprint("---> No hay ordenes pendientes.\n")
             return
 
         first_routes = route_vehicles(taxis_tocall, pending_orders, self.center.lat, self.center.lon, self.center.id, START_TIME)
@@ -379,18 +394,18 @@ class RoutePendingPickups(Event):
 
             self.center.dropoff_pending.append(pat)
 
-        self.center.vprint(f"Se rutean {len(first_routes)} de {len(pending_orders)} ordenes pendientes.\n")
+        self.center.vprint(f"---> Se rutean {len(first_routes)} de {len(pending_orders)} ordenes pendientes.\n")
 
 class RoutePendingDropoffs(Event):
     """
     Ruteo de dejadas pendientes.
     """
     def __init__(self, time, center):
-        super().__init__(time, center, rank=1, description="RoutePendingDropoffs")
+        super().__init__(time, center, rank=2, description="RoutePendingDropoffs")
         
     def execute(self):
 
-        self.center.vprint("Ruteando ordenes de dropoff pendientes...")
+        self.center.vprint("---> Ruteando ordenes de dropoff pendientes...")
 
         taxis_tocall = {}
         pending_orders = {}
@@ -398,7 +413,7 @@ class RoutePendingDropoffs(Event):
         for i, pat in enumerate(self.center.dropoff_pending + self.center.dropoff_wait):
 
             if pat.release_time is None:
-                self.center.vprint(f"{pat} no se rutea, pues no posee hora de liberacion.")
+                self.center.vprint(f"---> {pat} no se rutea, pues no posee hora de liberacion.")
                 continue
 
             # se redefine la compania del paciente a 0 para no tener que definir
@@ -415,7 +430,7 @@ class RoutePendingDropoffs(Event):
             self.center.taxis[id_taxi] = taxi
 
         if len(pending_orders) == 0:
-            self.center.vprint("No hay ordenes pendientes.\n")
+            self.center.vprint("---> No hay ordenes pendientes.\n")
             return
 
         first_routes = route_vehicles(taxis_tocall, pending_orders, self.center.lat, self.center.lon, self.center.id, START_TIME)
@@ -433,4 +448,33 @@ class RoutePendingDropoffs(Event):
 
             self.center.completed.append(pat)
 
-        self.center.vprint(f"Se rutean {len(first_routes)} de {len(pending_orders)} ordenes pendientes.\n")
+        self.center.vprint(f"---> Se rutean {len(first_routes)} de {len(pending_orders)} ordenes pendientes.\n")
+
+
+
+class ScheduleFixedPatients(Event):
+    """
+    Agendamiento de citas fija.
+    """
+    def __init__(self, time, center):
+        super().__init__(time, center, rank=-2, description="ScheduleFixedPatients")
+        
+    def execute(self):
+
+        self.center.vprint("---> Agendando citas con hora fija...")
+
+        count = 0
+        for patient in self.center.patients.values():
+            for att_order in patient.attention_orders:
+                if att_order.required_time is not None:
+                    next_appt = att_order.next_appointment(self.center.doctors, START_TIME)
+
+                    if next_appt is None:
+                        doctor_id = att_order.required_doctor_id
+                        req_time = bf.int2strtime(att_order.required_time)
+                        raise Exception(f"No es posible agendar cita requerida con '{doctor_id}' a las {req_time}.")
+
+                    att_order.set_appointment(next_appt, fixed=True)
+                    count += 1
+
+        self.center.vprint(f"---> Se agendan todas las citas ({count}).\n")

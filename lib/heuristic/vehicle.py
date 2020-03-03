@@ -192,9 +192,6 @@ def route_vehicles(vehicles_dict, tpt_orders_dict, lat_depot, lon_depot, name_de
 
     first_routes = []
 
-    #if len(nodes) == 0 or len(vehicles) == 0:
-    #    return first_routes
-
     if solution["num_vehicles_used"] == 0:
         return first_routes
 

@@ -44,24 +44,22 @@ class Patient:
             # creacion ordenes de atencion
             for _, row in df_attentions.iterrows():
 
+                # hora de atencion referencial
                 if pd.isna(row.reference_attention_time):
-                    window_start = START_TIME
-                    window_end = END_TIME
+                    reference_attention_time = None
                 else:
                     reference_attention_time = bf.strtime2int(row.reference_attention_time)
-                    window_start = max(START_TIME, reference_attention_time - ATTENTION_WINDOW_DEVIATION)
-                    window_end = min(END_TIME, reference_attention_time + ATTENTION_WINDOW_DEVIATION)
-
+                    
+                # hora de atencion requerida
                 if pd.isna(row.required_attention_time):
                     required_attention_time = None
                 else:
                     required_attention_time = bf.strtime2int(row.required_attention_time)
                 
                 att_order = AttentionOrder(row.attention_type, str(row.doctor_id),
-                    window_start=window_start,
-                    window_end=window_end,
                     medical_rest=bool(row.medical_rest),
-                    required_time=required_attention_time)
+                    required_time=required_attention_time,
+                    reference_time=reference_attention_time)
 
                 patient.add_attorder(att_order)
                 

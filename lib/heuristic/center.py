@@ -86,21 +86,11 @@ class Center:
         
         self.vprint(f"Simulando operacion del centro {self.id}...\n")
 
-        # se agendan citas para las ordenes de atencion que requieren un horario definido
-        for patient in self.patients.values():
-            for att_order in patient.attention_orders:
-                if att_order.required_time is not None:
-                    next_appt = att_order.next_appointment(self.doctors, START_TIME)
-
-                    if next_appt is None:
-                        doctor_id = att_order.required_doctor_id
-                        req_time = bf.int2strtime(att_order.required_time)
-                        raise Exception(f"No es posible agendar cita requerida con '{doctor_id}' a las {req_time}.")
-
-                    att_order.set_appointment(next_appt, fixed=True)
-
         # eventos iniciales
+        ScheduleFixedPatients(START_TIME, self)
+        SchedulePendingPatients(START_TIME, self, restless_only=True)
         RouteVehicles(START_TIME, self)
+        
         for vehicle in self.vehicles.values():
             pass
             #ReleaseVehicle(vehicle.release_time, self, vehicle)
@@ -124,9 +114,17 @@ class Center:
             next_event.execute() # ejecutar evento
             last_event = next_event
 
-        # evento terminal
-        SchedulePendingPatients(self.clock, self).execute()
-        RoutePendingPickups(self.clock, self).execute()
-        RoutePendingDropoffs(self.clock, self).execute()
-            
+        # eventos terminales
+        self.vprint("Simulando eventos terminales...\n")
+
+        SchedulePendingPatients(self.clock, self)
+        RoutePendingPickups(self.clock, self)
+        RoutePendingDropoffs(self.clock, self)
+
+        while self.future_events:
+            next_event = hq.heappop(self.future_events) # evento inminente
+            self.clock = next_event.time # avanza reloj de la simulacion
+            self.vprint(next_event) # descripcion del evento
+            next_event.execute() # ejecutar evento
+   
         self.vprint("Fin de la simulacion!\n")
