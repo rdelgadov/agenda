@@ -68,7 +68,7 @@ class Heuristic
             required_attention = pd.time if pd.is_next?
           end
           medic = b.medic.type.blank? ? 'Primaria' : 'Kinesiologia'
-          csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, '', b.updated_at.to_date.to_s]
+          csv << [person.bp, b.date, medic, tp, person.latitude, person.longitude, (person.accompanied? ? 1 : 0), '', '', b.medic_id, vt, (!person.rest.blank? ? 1 : 0), required_attention, reference_attention, person.reference_pickup_time, b.updated_at.to_date.to_s]
           end
         end
     end
