@@ -18,7 +18,11 @@ class Medic < ApplicationRecord
     def patients_for_today
         dates = []
         PersonDate.where(medic_id: id, date: Date.current).where.not(person_id: 1).sort_by{|d| d.time.to_time}.each do |pd|
-        dates << [pd,pd.next_date]
+            next_date = pd.next_dates.first
+            dates << [pd,next_date]
+            if !pd.next_dates.second.blank? and next_date.date == pd.next_dates.second.date
+                dates << [pd,pd.next_dates.second]
+            end
         end
         dates
     end

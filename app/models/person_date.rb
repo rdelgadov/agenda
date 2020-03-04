@@ -19,6 +19,10 @@ class PersonDate < ApplicationRecord
     PersonDate.where(person_id: person_id).where("date>=?",date).order(date: :asc).first
   end
 
+  def next_dates date=Date.tomorrow
+    PersonDate.where(person_id: person_id).where("date>=?",date).order(date: :asc).take(2)
+  end
+
   def is_next?
     self == self.next_date
   end
