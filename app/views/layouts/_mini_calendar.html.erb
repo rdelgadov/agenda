@@ -5,7 +5,7 @@
         {title: '', allDay: true, color:'#ffffff', start:new moment('<%= date.to_s(:utc) %>')},
 <% end %>
   <% end %>];
-  var avalaible = [<%= medic.available_date Date.today %> ];
+  var avalaible = [<%= medic.available_date Date.current %> ];
   // TODO: Take events and know if it is already or not.
   // Do not duplicate the events.
   // IMPORTANT! How can render events if change the month view.

@@ -6,7 +6,7 @@
       <% end %>
     <% end %>];
   var <%= events %>avalaible = [
-    <% (medic.month_available_dates Date.today).each do |date| %>
+    <% (medic.month_available_dates Date.current).each do |date| %>
     '<%= date %>',
     <%end %>
   ];

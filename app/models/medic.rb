@@ -17,13 +17,13 @@ class Medic < ApplicationRecord
 
     def patients_for_today
         dates = []
-        PersonDate.where(medic_id: id, date: Date.today).where.not(person_id: 1).sort_by{|d| d.time.to_time}.each do |pd|
-            dates << [pd,pd.next_date]
+        PersonDate.where(medic_id: id, date: Date.current).where.not(person_id: 1).sort_by{|d| d.time.to_time}.each do |pd|
+        dates << [pd,pd.next_date]
         end
         dates
     end
 
-    def next_dates_for_my_patients date=Date.today
+    def next_dates_for_my_patients date=Date.current
         dates = []
         PersonDate.where(medic_id: id, date: date).where.not(person_id: 1).each do |pd|
             unless pd.next_date(date+1.day).blank?
@@ -33,7 +33,7 @@ class Medic < ApplicationRecord
         dates.uniq.sort_by{|d| [d.date, d.time.to_time]}
     end
 
-    def create_dates date=Date.today
+    def create_dates date=Date.current
         week = date.at_beginning_of_week
         attention.each do |attention|
             attention[1].each do |d|

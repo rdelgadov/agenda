@@ -2,7 +2,7 @@ class Person < ApplicationRecord
   has_and_belongs_to_many :buckets
 
   def medic_dates medic
-    PersonDate.where(person_id: 1,medic_id: medic).where(date: Date.today..30.days.from_now).all
+    PersonDate.where(person_id: 1,medic_id: medic).where(date: Date.current..30.days.from_now).all
   end
 
   def take_buckets person_params

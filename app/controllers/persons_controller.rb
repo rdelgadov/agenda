@@ -30,9 +30,9 @@ class PersonsController < ApplicationController
   end
 
   def calendar_edit
-    @dates = PersonDate.where('date>=?',Date.today).where(person_id: params[:id])
+    @dates = PersonDate.where('date>=?',Date.current).where(person_id: params[:id])
     @person = Person.find(params[:id])
-    @buckets = (@person.buckets.where("date>=?",Date.today).order(date: :asc).select{|b| @dates.map{|d| [d.date,d.medic_id]}.exclude? [b.date,b.medic_id]} + @dates).sort_by{|b| b[:date]}
+    @buckets = (@person.buckets.where("date>=?",Date.current).order(date: :asc).select{|b| @dates.map{|d| [d.date,d.medic_id]}.exclude? [b.date,b.medic_id]} + @dates).sort_by{|b| b[:date]}
     render 'person_dates/person_list'
   end
 
