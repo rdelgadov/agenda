@@ -67,8 +67,8 @@ class PersonDatesController < ApplicationController
   end
 
   def available_dates
-    params.permit(:medic_id, :date)
-    @dates = Medic.find(params[:medic_id]).available_dates params[:date].to_date
+    params.permit(:medic_id, :date, :person_id)
+    @dates = Medic.find(params[:medic_id]).available_dates params[:person_id],params[:date].to_date
     respond_to do |format|
       format.json { render json: @dates }
     end

@@ -13,7 +13,7 @@
 
       <p>
         <%= form.label :hora %><br>
-        <%= form.select :time, Medic.find(@person.medic).available_dates(Date.tomorrow).map { |date| [date.time, date.time] } %>
+        <%= form.select :time, Medic.find(@person.medic).available_dates(@person.id,Date.tomorrow).map { |date| [date.time, date.time] } %>
       </p>
 
 
@@ -43,6 +43,7 @@
 <script>
   var date = $('#person_date_date');
   var medic = $('#person_date_medic_id');
+  var person = $('#person_date_person_id');
 
   function poblate_date() {
     $.ajax({
@@ -50,6 +51,7 @@
       type: 'GET',
       data: {
         medic_id: medic.val(),
+        person_id: person.val(),
         date: date.val()
       },
       success: function (data) {
