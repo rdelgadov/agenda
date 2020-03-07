@@ -8,7 +8,7 @@ class PersonsController < ApplicationController
   end
 
   def index
-    @persons = Person.all[1..-1].reverse
+    @persons = Person.where.not(id: 1).all.reverse
   end
 
   def edit
